@@ -1,4 +1,4 @@
-#!/home/2024spring_41class_team7/Backend/venv/bin/python
+#!/Users/jeonghansaem/Downloads/hs2/2024spring_41class_team7/Backend/venv/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys
