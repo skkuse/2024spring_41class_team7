@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const buttonColor = '#1A4D2E';
 const titleColor = '#4F6F52';
@@ -71,6 +72,7 @@ const SettingsContainer = styled.div`
 const SettingItem = styled.div`
   margin-bottom: 20px;
   display: flex;
+  flex-wrap: wrap;
 `;
 
 const Label = styled.label`
@@ -108,14 +110,6 @@ const Button = styled.button`
   }
 `;
 
-const ResultContainer = styled.div`
-  margin-top: 20px;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #e8f5e9;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
 const SubTitle = styled.h2`
   font-size: 30px;
   font-weight: bold;
@@ -141,6 +135,7 @@ const Button2 = styled.button`
   line-height: 30px;
   background-color: ${({ selected }) => (selected ? buttonColor : backColor)};
   color: ${({ selected }) => (selected ? backColor : "#000")};
+  cursor: pointer;
 
   &:hover {
     background-color: #45a049;
@@ -157,6 +152,7 @@ const Button3 = styled.button`
   line-height: 30px;
   background-color: ${({ selected }) => (selected ? buttonColor : backColor)};
   color: ${({ selected }) => (selected ? backColor : "#000")};
+  cursor: pointer;
 
   &:hover {
     background-color: #45a049;
@@ -164,87 +160,86 @@ const Button3 = styled.button`
 `;
 
 function Calculator() {
-    const [code, setCode] = useState('');
-    const [cpu, setCPU] = useState('');
-    const [cores, setCores] = useState(0);
-    const [memory, setMemory] = useState(0);
-    const [visibility, setVisibility] = useState('private');
-    const [result, setResult] = useState(null);
+  const [code, setCode] = useState('');
+  const [cpu, setCPU] = useState('');
+  const [cores, setCores] = useState(0);
+  const [memory, setMemory] = useState(0);
+  const [visibility, setVisibility] = useState('private');
+  const [result, setResult] = useState(null);
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!code.trim()) {
-            alert('Please enter your Java code.');
-            return;
-        }
-        if (!['Low', 'Mid', 'High'].includes(cpu)) {
-            alert('Please select a valid CPU specification.');
-            return;
-        }
-        const data = { java_code: code, cpu, cores, memory, visibility };
-        console.log(data);  // 데이터 형식을 확인하기 위한 로그 출력
-        const response = await fetch('/api/calculate/carbon-emission/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Error:', errorData);
-        } else {
-            const responseData = await response.json();
-            setResult(responseData.carbon_emission);
-            navigate('/showrefactoring');
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!code.trim()) {
+      alert('Please enter your Java code.');
+      return;
+    }
+    if (!['Low', 'Mid', 'High'].includes(cpu)) {
+      alert('Please select a valid CPU specification.');
+      return;
+    }
+    const data = { java_code: code, cpu, cores, memory, visibility };
+    console.log(data);  // 데이터 형식을 확인하기 위한 로그 출력
+    const response = await fetch('/api/calculate/carbon-emission/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error:', errorData);
+    } else {
+      const responseData = await response.json();
+      setResult(responseData.carbon_emission);
+    }
+  };
+  useEffect(() => {
+    if (result !== null) {
+      console.log(result); //탄소배출량 결과
+      navigate('/showrefactoring');
+    }
+  }, [result, navigate]);
 
-    return (
-        <Wrapper>
-            <Header>Green Coders</Header>
-            <Container>
-                <FormContainer>
-                    <SubTitle>Input Code</SubTitle>
-                    <Button2 selected={visibility === 'public'} onClick={() => setVisibility('public')}>Public</Button2>
-                    <Button2 selected={visibility === 'private'} onClick={() => setVisibility('private')}>Private</Button2>
-                    <InputSection>
-                        <TextArea
-                            value={code}
-                            onChange={(e) => setCode(e.target.value)}
-                            placeholder="Enter your Java code here"
-                        />
-                    </InputSection>
-                    {result && (
-                        <ResultContainer>
-                            <h3>Carbon Emission</h3>
-                            <p>{result} kg CO2</p>
-                        </ResultContainer>
-                    )}
-                </FormContainer>
-                <SettingsContainer>
-                    <SubTitle2>Details about your algorithm</SubTitle2>
-                    <SettingItem>
-                        <Label>CPU specification</Label>
-                        <Button3 selected={cpu === 'Low'} onClick={() => setCPU('Low')}>Low</Button3>
-                        <Button3 selected={cpu === 'Mid'} onClick={() => setCPU('Mid')}>Mid</Button3>
-                        <Button3 selected={cpu === 'High'} onClick={() => setCPU('High')}>High</Button3>
-                    </SettingItem>
-                    <SettingItem>
-                        <Label>Number of cores</Label>
-                        <Input type="number" value={cores} onChange={(e) => setCores(parseInt(e.target.value))} />
-                    </SettingItem>
-                    <SettingItem>
-                        <Label>Memory available (in GB)</Label>
-                        <Input type="number" value={memory} onChange={(e) => setMemory(parseInt(e.target.value))} />
-                    </SettingItem>
-                    <Button onClick={handleSubmit}>Run</Button>
-                </SettingsContainer>
-            </Container>
-        </Wrapper>
-    );
+  return (
+    <Wrapper>
+      <Header>Green Coders</Header>
+      <Container>
+        <FormContainer>
+          <SubTitle>Input Code</SubTitle>
+          <Button2 selected={visibility === 'public'} onClick={() => setVisibility('public')}>Public</Button2>
+          <Button2 selected={visibility === 'private'} onClick={() => setVisibility('private')}>Private</Button2>
+          <InputSection>
+            <TextArea
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="Enter your Java code here"
+            />
+          </InputSection>
+        </FormContainer>
+        <SettingsContainer>
+          <SubTitle2>Details about your algorithm</SubTitle2>
+          <SettingItem>
+            <Label>CPU specification</Label>
+            <Button3 selected={cpu === 'Low'} onClick={() => setCPU('Low')}>Low</Button3>
+            <Button3 selected={cpu === 'Mid'} onClick={() => setCPU('Mid')}>Mid</Button3>
+            <Button3 selected={cpu === 'High'} onClick={() => setCPU('High')}>High</Button3>
+          </SettingItem>
+          <SettingItem>
+            <Label>Number of cores</Label>
+            <Input type="number" value={cores} onChange={(e) => setCores(parseInt(e.target.value))} />
+          </SettingItem>
+          <SettingItem>
+            <Label>Memory available (in GB)</Label>
+            <Input type="number" value={memory} onChange={(e) => setMemory(parseInt(e.target.value))} />
+          </SettingItem>
+          <Button onClick={handleSubmit}>Run</Button>
+        </SettingsContainer>
+      </Container>
+    </Wrapper>
+  );
 }
 
 export default Calculator;

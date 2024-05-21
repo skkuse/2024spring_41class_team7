@@ -52,6 +52,10 @@ const Header = styled.div`
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-indent: 50px;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const SubTitle = styled.h2`
@@ -70,25 +74,43 @@ const ShowCode = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
+const Button = styled.button`
+  width: 20%;
+  height: 60px;
+  border-radius: 5px;
+  background-color: ${buttonColor};
+  color: white;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+  margin-right: 30px;
+
+  &:hover {
+    background-color: #45a049;
+  }
+`;
+
 function ShowRefactoring() {
 
 
-
-    return (
-        <Wrapper>
-            <Header>Green Coders</Header>
-            <Container>
-                <FormContainer>
-                    <SubTitle>User Code</SubTitle>
-                    <ShowCode></ShowCode>
-                </FormContainer>
-                <FormContainer>
-                    <SubTitle>Green Code</SubTitle>
-                    <ShowCode></ShowCode>
-                </FormContainer>
-            </Container>
-        </Wrapper>
-    );
+  return (
+    <Wrapper>
+      <Header>
+        Green Coders
+        <Button>Code analysis</Button>
+      </Header>
+      <Container>
+        <FormContainer>
+          <SubTitle>User Code</SubTitle>
+          <ShowCode></ShowCode>
+        </FormContainer>
+        <FormContainer>
+          <SubTitle>Green Code</SubTitle>
+          <ShowCode></ShowCode>
+        </FormContainer>
+      </Container>
+    </Wrapper>
+  );
 }
 
 export default ShowRefactoring;
