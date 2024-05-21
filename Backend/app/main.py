@@ -15,14 +15,19 @@ app = FastAPI(
 # CORS 설정
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://13.125.241.39:3000"],  # React 개발 서버 주소
+    #allow_origins=["http://13.125.241.39:3000"],  # 배포 서버 주소
+    allow_origins=["http://localhost:3000"],  # 로컬 개발 서버 주소
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(calculate.router, prefix="/calculate", tags=["calculate"])
-app.include_router(admin.router, prefix="/admin", tags=["admin"])
+# deploy
+#app.include_router(calculate.router, prefix="/calculate", tags=["calculate"])
+#app.include_router(admin.router, prefix="/admin", tags=["admin"])
+
+app.include_router(calculate.router, prefix="/api/calculate", tags=["calculate"])
+app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
 
 templates = Jinja2Templates(directory="app/templates")
 
