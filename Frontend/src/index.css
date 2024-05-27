@@ -1,0 +1,24 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #FFFFFF;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #4caf50;
+  padding: 20px;
+  text-align: center;
+  color: white;
+}
+
+h1 {
+  margin: 0;
+}
+
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}

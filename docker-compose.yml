@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./Backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+
+  frontend:
+    build: ./Frontend
+    expose:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - WDS_SOCKET_PORT=0
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
