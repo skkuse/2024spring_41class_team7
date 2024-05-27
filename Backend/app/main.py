@@ -28,6 +28,7 @@ app.add_middleware(
 
 app.include_router(calculate.router, prefix="/api/calculate", tags=["calculate"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
+#app.include_router(execute.router, prefix="/api/execute", tags=["execute_java"])
 
 templates = Jinja2Templates(directory="app/templates")
 
