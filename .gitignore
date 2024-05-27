@@ -11,6 +11,13 @@
 # pem
 .pem
 
+# deploy
+.conf
+.sh
+.lock
+
+/.env
+
 # production
 /build
 
