@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from app.services.carbon_calculator import calculate_carbon_emission
-from app.services.execute import execute_java_code
+from ...services.carbon_calculator import calculate_carbon_emission
+from ...services.execute import execute_java_code
 
 router = APIRouter()
 

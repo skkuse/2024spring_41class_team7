@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from Backend.app.models.requests import ReportRequest
+from ...models.requests import ReportRequest
 
 router = APIRouter()
 
