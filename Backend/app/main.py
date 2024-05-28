@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
 from app.api.endpoints import calculate, admin
 from app.core.config import settings
+from sqlalchemy import create_engine, MetaData
+from app.domain import domains
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -29,6 +31,11 @@ app.add_middleware(
 app.include_router(calculate.router, prefix="/api/calculate", tags=["calculate"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
 #app.include_router(execute.router, prefix="/api/execute", tags=["execute_java"])
+
+DB_URL = 'mysql+pymysql://root:310036@localhost:3306/green_coders_db'
+
+engine = create_engine(DB_URL, pool_recycle=500)
+domains.Base.metadata.create_all(engine)
 
 templates = Jinja2Templates(directory="app/templates")
 
