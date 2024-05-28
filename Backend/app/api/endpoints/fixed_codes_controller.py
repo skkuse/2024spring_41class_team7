@@ -1,10 +1,12 @@
 from fastapi import APIRouter
 
 from Backend.app.models.requests import FixedCodeRequest
+from Backend.app.models.response import Response
+from Backend.app.services.fixed_code_service import *
 
 router = APIRouter()
 
-@router.post("/fixedCodes")
+@router.post("/fixedCodes/")
 def create_fixed_code(fixed_code: FixedCodeRequest):
     return None
 

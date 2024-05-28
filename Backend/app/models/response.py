@@ -2,10 +2,10 @@ from pydantic import BaseModel
 from typing import Optional
 
 class ExceptionResponse(BaseModel):
-    exception: Exception
+    exception: str
     message: str
 
-class Reponse(BaseModel):
+class Response(BaseModel):
     status: str
     onSuccess: Optional[object] = None
     onError: Optional[ExceptionResponse] = None
