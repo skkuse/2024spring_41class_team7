@@ -7,5 +7,9 @@ class ExceptionResponse(BaseModel):
 
 class Response(BaseModel):
     status: str
-    onSuccess: Optional[object] = None
-    onError: Optional[ExceptionResponse] = None
+    onSuccess: Optional[object]
+    onError: Optional[ExceptionResponse]
+
+class ListBody(BaseModel):
+    nItems: int
+    items: list

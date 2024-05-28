@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 from fastapi import Request
-from app.core.config import settings
+from ...core.config import settings
 
 router = APIRouter()
 security = HTTPBasic()

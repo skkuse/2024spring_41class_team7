@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from Backend.app.models.requests import BuggyCodeRequest
+from ...models.requests import BuggyCodeRequest
 
 router = APIRouter()
 
