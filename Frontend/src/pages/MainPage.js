@@ -4,9 +4,6 @@ import { createGlobalStyle } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Plotly from 'plotly.js-dist';
 
-const titleColor = '#1A4D2E';
-const layerColor1 = '#1A4D2E';
-
 
 const Wrapper = styled.div`
   display: flex;
@@ -63,12 +60,13 @@ const FirstBox = styled.div`
   border-radius: 5px;
   background-color: #F5EFE6;
   width: 100%;
+  height: 100px;
   box-sizing: border-box;
 `;
 
 const FirstBoxLeft = styled.div`
   color: #4F6F52;
-  font-size: 30px;
+  font-size: 50px;
   font-weight: bold;
 `;
 

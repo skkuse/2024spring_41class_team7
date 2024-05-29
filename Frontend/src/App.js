@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import AdminPage from './pages/AdminPage';
 import ShowRefactoring from './pages/ShowRefactoring';
 import MainPage from './pages/MainPage';
+import ResultPage from './pages/ResultPage';
 
 const Title = styled.h1`
   margin: 0;
@@ -32,6 +33,7 @@ function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/calculator" element={<Calculator />} />
             <Route path="/" element={<MainPage />} />
+            <Route path="/resultpage" element={<ResultPage />} />
           </Routes>
         </MainContent>
       </div>
