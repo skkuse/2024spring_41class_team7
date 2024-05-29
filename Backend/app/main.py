@@ -15,14 +15,29 @@ app = FastAPI(
 # CORS 설정
 app.add_middleware(
     CORSMiddleware,
+<<<<<<< HEAD
     allow_origins=["http://localhost:3000"],  # React 개발 서버 주소
+=======
+    #allow_origins=["http://54.180.155.187:3000"],  # 배포 서버 주소
+    allow_origins=["http://localhost:3000"],  # 로컬 개발 서버 주소
+>>>>>>> b5f2d9130d8143d5d4b9ed685ec013a43780fb62
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+<<<<<<< HEAD
 app.include_router(calculate.router, prefix="/api/calculate", tags=["calculate"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
+=======
+# deploy
+#app.include_router(calculate.router, prefix="/calculate", tags=["calculate"])
+#app.include_router(admin.router, prefix="/admin", tags=["admin"])
+
+app.include_router(calculate.router, prefix="/api/calculate", tags=["calculate"])
+app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
+#app.include_router(execute.router, prefix="/api/execute", tags=["execute_java"])
+>>>>>>> b5f2d9130d8143d5d4b9ed685ec013a43780fb62
 
 templates = Jinja2Templates(directory="app/templates")
 

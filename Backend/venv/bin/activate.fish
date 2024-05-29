@@ -1,5 +1,9 @@
 # This file must be used with "source <venv>/bin/activate.fish" *from fish*
+<<<<<<< HEAD
 # (https://fishshell.com/); you cannot run it directly.
+=======
+# (https://fishshell.com/). You cannot run it directly.
+>>>>>>> b5f2d9130d8143d5d4b9ed685ec013a43780fb62
 
 function deactivate  -d "Exit virtual environment and return to normal shell environment"
     # reset old environment variables
@@ -33,7 +37,11 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
+<<<<<<< HEAD
 set -gx VIRTUAL_ENV "/home/2024spring_41class_team7/Backend/venv"
+=======
+set -gx VIRTUAL_ENV "/Users/jeonghansaem/Downloads/hs2/2024spring_41class_team7/Backend/venv"
+>>>>>>> b5f2d9130d8143d5d4b9ed685ec013a43780fb62
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

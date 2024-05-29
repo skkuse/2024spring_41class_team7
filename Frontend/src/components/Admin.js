@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+
+const buttonColor = '#1A4D2E';
+const titleColor = '#4F6F52';
+const layerColor1 = '#F5EFE6';
+const layerColor2 = '#E8DFCA';
+const backColor = '#FFFFFF';
+
 
 const AdminContainer = styled.div`
   display: flex;
@@ -7,21 +15,17 @@ const AdminContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
+  width: 500px;
+  background-color: ${layerColor1};
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
   width: 300px;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
-const Label = styled.label`
-  margin-bottom: 10px;
-  font-size: 16px;
+  padding: 30px;
 `;
 
 const Input = styled.input`
@@ -35,7 +39,7 @@ const Input = styled.input`
 const Button = styled.button`
   padding: 10px;
   border-radius: 5px;
-  background-color: #4caf50;
+  background-color: ${buttonColor};
   color: white;
   font-size: 16px;
   border: none;
@@ -46,14 +50,21 @@ const Button = styled.button`
   }
 `;
 
+const H1 = styled.h1`
+  margin-top: 30px;
+  color: ${titleColor};
+`;
+
 function Admin() {
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Here you would handle the authentication logic
-    if (password === 'your_admin_password') {
+    if (password === 'ss') {
       alert('Login successful!');
+      navigate('/adminpage');
       // Redirect or show admin content
     } else {
       alert('Incorrect password.');
@@ -62,9 +73,8 @@ function Admin() {
 
   return (
     <AdminContainer>
-      <h2>Admin Login</h2>
+      <H1>Administrator Login</H1>
       <Form onSubmit={handleSubmit}>
-        <Label>Password</Label>
         <Input
           type="password"
           value={password}
