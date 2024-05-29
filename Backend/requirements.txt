@@ -2,3 +2,7 @@ fastapi
 uvicorn
 jinja2
 python-dotenv
+<<<<<<< HEAD
+=======
+pydantic-settings
+>>>>>>> b5f2d9130d8143d5d4b9ed685ec013a43780fb62

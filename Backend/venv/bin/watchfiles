@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #!/home/2024spring_41class_team7/Backend/venv/bin/python
+=======
+#!/Users/jeonghansaem/Downloads/hs2/2024spring_41class_team7/Backend/venv/bin/python3.12
+>>>>>>> b5f2d9130d8143d5d4b9ed685ec013a43780fb62
 # -*- coding: utf-8 -*-
 import re
 import sys
