@@ -17,6 +17,7 @@ class BuggyCodeRequest(BaseModel):
     core_num: int
     memory: int
 
+
 class FixStrategyRequest(BaseModel):
     description: str
 
