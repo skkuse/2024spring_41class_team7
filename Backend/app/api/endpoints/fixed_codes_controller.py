@@ -1,8 +1,10 @@
 from fastapi import APIRouter, FastAPI
 
 from ...models.requests import FixedCodeRequest
-from ...models.response import Response, ExceptionResponse, ListBody
-
+from ...models.response import Response, ExceptionResponse, ListBody, FixedCodeResponse
+from ...services.fixed_code_service import FixedCodeService
+from ...domain.domains import FixedCode
+from ...models.exceptions import *
 
 app = FastAPI()
 
@@ -46,35 +48,51 @@ def mock_fixed_code_3():
 
 @router.post("/")
 def create_fixed_code(fixed_code: FixedCodeRequest):
+    new_fixed_code = FixedCodeService.create(FixedCode.create(fixed_code))
     return Response(status="success",
-                    onSuccess=mock_fixed_code_1(),
+                    onSuccess=FixedCodeResponse.create(new_fixed_code),
                     onError=None)
 
 @router.get("/")
 def get_fixed_codes():
+    fixed_codes = FixedCodeService.find_all()
     return Response(status="success",
-                    onSuccess=ListBody(nItems=2, items=[mock_fixed_code_1(), mock_fixed_code_2()]),
+                    onSuccess=ListBody(
+                        nItems=len(fixed_codes),
+                        items=map(lambda fixed_code: FixedCodeResponse.create(fixed_code), fixed_codes)),
                     onError=None)
 
 @router.get("/{fixed_code_id}")
 def get_one_fixed_code(fixed_code_id: int):
-    return Response(status="success",
-                    onSuccess=mock_fixed_code_1(),
-                    onError=None)
+    try:
+        findFixedCode = FixedCodeService.find_one(fixed_code_id)
+        return Response(status="success",
+                        onSuccess=FixedCodeResponse.create(findFixedCode),
+                        onError=None)
+    except FileNotFoundError as e:
+        exception_body = handle_DataNotFoundException(fixed_code_id)
+        return Response(status="fail",
+                        onSuccess=None,
+                        onError=exception_body)
 
 @router.get("/strategy/{strategy_id}")
 def get_one_fixed_code_by_strategy(strategy_id: int):
+    findFixedCodes = FixedCodeService.find_all_by_strategy(strategy_id)
     return Response(status="success",
-                    onSuccess=ListBody(nItems=2, items=[mock_fixed_code_1(), mock_fixed_code_3()]),
+                    onSuccess=ListBody(
+                        nItems=len(findFixedCodes),
+                        items=map(lambda fixed_code: FixedCodeResponse.create(fixed_code), findFixedCodes)),
                     onError=None)
 
 @router.get("/buggyCode/{buggy_code_id}")
 def get_one_fixed_code_by_buggy_code(buggy_code_id: int):
+    findFixedCodes = FixedCodeService.find_all_by_buggy_code(buggy_code_id)
     return Response(status="success",
-                    onSuccess=ListBody(nItems=2, items=[mock_fixed_code_1(), mock_fixed_code_2()]),
+                    onSuccess=ListBody(
+                        nItems=len(findFixedCodes),
+                        items=map(lambda fixed_code: FixedCodeResponse.create(fixed_code), findFixedCodes)),
                     onError=None)
 
 @router.delete("/{fixed_code_id}")
 def delete_fixed_code(fixed_code_id: int):
     return None
-

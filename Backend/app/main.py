@@ -33,9 +33,9 @@ app.add_middleware(
 app.include_router(calculate.router, prefix="/api/calculate", tags=["calculate"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
 app.include_router(fixed_codes_controller.router, prefix="/api/fixedCodes", tags=["fixed_codes"])
-app.include_router(fix_strategy_controller.router, tags=["fix_strategy"])
-app.include_router(buggy_codes_controller.router, tags=["buggy_codes"])
-app.include_router(report_controller.router, tags=["reports"])
+app.include_router(fix_strategy_controller.router, prefix="/api/fixStrategy", tags=["fix_strategy"])
+app.include_router(buggy_codes_controller.router, prefix="/api/buggyCodes", tags=["buggy_codes"])
+app.include_router(report_controller.router, prefix="/api/reports", tags=["reports"])
 #app.include_router(execute.router, prefix="/api/execute", tags=["execute_java"])
 
 load_dotenv()
