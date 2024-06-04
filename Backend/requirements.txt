@@ -2,8 +2,6 @@ fastapi
 uvicorn
 jinja2
 python-dotenv
-<<<<<<< HEAD
-=======
 pydantic-settings
 sqlalchemy
 pymysql

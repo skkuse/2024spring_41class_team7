@@ -5,7 +5,8 @@ from .api.endpoints import calculate, admin, fixed_codes_controller, fix_strateg
 from .core.config import settings
 from sqlalchemy import create_engine, MetaData
 from .domain import domains
-
+from dotenv import load_dotenv
+import os
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -18,21 +19,13 @@ app = FastAPI(
 # CORS 설정
 app.add_middleware(
     CORSMiddleware,
-<<<<<<< HEAD
-    allow_origins=["http://localhost:3000"],  # React 개발 서버 주소
-=======
     #allow_origins=["http://54.180.155.187:3000"],  # 배포 서버 주소
     allow_origins=["http://localhost:3000"],  # 로컬 개발 서버 주소
->>>>>>> b5f2d9130d8143d5d4b9ed685ec013a43780fb62
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-<<<<<<< HEAD
-app.include_router(calculate.router, prefix="/api/calculate", tags=["calculate"])
-app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
-=======
 # deploy
 #app.include_router(calculate.router, prefix="/calculate", tags=["calculate"])
 #app.include_router(admin.router, prefix="/admin", tags=["admin"])
@@ -40,13 +33,20 @@ app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
 app.include_router(calculate.router, prefix="/api/calculate", tags=["calculate"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
 app.include_router(fixed_codes_controller.router, prefix="/api/fixedCodes", tags=["fixed_codes"])
-app.include_router(fix_strategy_controller.router, prefix="/api/fixStrategy", tags=["fix_strategy"])
-app.include_router(buggy_codes_controller.router, prefix="/api/buggyCodes", tags=["buggy_codes"])
-app.include_router(report_controller.router, prefix="/api/reports", tags=["reports"])
+app.include_router(fix_strategy_controller.router, tags=["fix_strategy"])
+app.include_router(buggy_codes_controller.router, tags=["buggy_codes"])
+app.include_router(report_controller.router, tags=["reports"])
 #app.include_router(execute.router, prefix="/api/execute", tags=["execute_java"])
->>>>>>> b5f2d9130d8143d5d4b9ed685ec013a43780fb62
 
-DB_URL = 'mysql+pymysql://root:310036@localhost:3306/green_coders_db'
+load_dotenv()
+
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_NAME = os.getenv("DB_NAME")
+
+DB_URL = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 
 engine = create_engine(DB_URL, pool_recycle=500)
 domains.Base.metadata.create_all(engine)

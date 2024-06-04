@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import Plotly from 'plotly.js-dist';
+import { useNavigate } from 'react-router-dom';
 
 
 const Wrapper = styled.div`
@@ -266,6 +266,10 @@ function MainPage(){
   const innerBoxRightRef = useRef(null);
   const [beforeCode, setBeforeCode] = useState('Before Code');
   const [afterCode, setAfterCode] = useState('After Code');
+  const navigate = useNavigate();
+  const handleCodeConversion = () => {
+    navigate('/calculator');
+  };
 
   const resizeGraphs = () => {
     if (innerBoxRightRef.current) {
@@ -315,7 +319,9 @@ function MainPage(){
         </Header>
         <FirstBox>
           <FirstBoxLeft>Green Coders</FirstBoxLeft>
-          <FirstBoxRight>Green코드 변환하기</FirstBoxRight>
+          <FirstBoxRight onClick={handleCodeConversion}>
+            Green코드 변환하기
+          </FirstBoxRight>
         </FirstBox>
         <Box>
           <InnerBoxLeft>
@@ -343,8 +349,8 @@ function MainPage(){
               <InnerBoxRightSubContents>1398</InnerBoxRightSubContents>
             </InnerBoxRightContents>
             <GraphContainer>
-              <graph ref={graph1Ref}></graph>
-              <graph ref={graph2Ref}></graph>
+              <Graph ref={graph1Ref}></Graph>
+              <Graph ref={graph2Ref}></Graph>
             </GraphContainer>
           </InnerBoxRight>
         </Box>
