@@ -1,9 +1,13 @@
 # This file must be used with "source bin/activate" *from bash*
 <<<<<<< HEAD
+<<<<<<< HEAD
 # you cannot run it directly
 =======
 # You cannot run it directly
 >>>>>>> b5f2d9130d8143d5d4b9ed685ec013a43780fb62
+=======
+# you cannot run it directly
+>>>>>>> main
 
 deactivate () {
     # reset old environment variables
@@ -18,9 +22,12 @@ deactivate () {
         unset _OLD_VIRTUAL_PYTHONHOME
     fi
 
-    # Call hash to forget past commands. Without forgetting
+    # This should detect bash and zsh, which have a hash command that must
+    # be called to get it to forget past commands.  Without forgetting
     # past commands the $PATH changes we made may not be respected
-    hash -r 2> /dev/null
+    if [ -n "${BASH:-}" -o -n "${ZSH_VERSION:-}" ] ; then
+        hash -r 2> /dev/null
+    fi
 
     if [ -n "${_OLD_VIRTUAL_PS1:-}" ] ; then
         PS1="${_OLD_VIRTUAL_PS1:-}"
@@ -40,6 +47,7 @@ deactivate () {
 deactivate nondestructive
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 VIRTUAL_ENV="/home/2024spring_41class_team7/Backend/venv"
 export VIRTUAL_ENV
 =======
@@ -53,6 +61,10 @@ else
     export VIRTUAL_ENV="/Users/jeonghansaem/Downloads/hs2/2024spring_41class_team7/Backend/venv"
 fi
 >>>>>>> b5f2d9130d8143d5d4b9ed685ec013a43780fb62
+=======
+VIRTUAL_ENV="/home/SE0529/2024spring_41class_team7/Backend/venv"
+export VIRTUAL_ENV
+>>>>>>> main
 
 _OLD_VIRTUAL_PATH="$PATH"
 PATH="$VIRTUAL_ENV/bin:$PATH"
@@ -74,6 +86,9 @@ if [ -z "${VIRTUAL_ENV_DISABLE_PROMPT:-}" ] ; then
     export VIRTUAL_ENV_PROMPT
 fi
 
-# Call hash to forget past commands. Without forgetting
+# This should detect bash and zsh, which have a hash command that must
+# be called to get it to forget past commands.  Without forgetting
 # past commands the $PATH changes we made may not be respected
-hash -r 2> /dev/null
+if [ -n "${BASH:-}" -o -n "${ZSH_VERSION:-}" ] ; then
+    hash -r 2> /dev/null
+fi

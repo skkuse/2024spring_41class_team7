@@ -1,9 +1,12 @@
 # This file must be used with "source bin/activate.csh" *from csh*.
 # You cannot run it directly.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> b5f2d9130d8143d5d4b9ed685ec013a43780fb62
+=======
+>>>>>>> main
 # Created by Davide Di Blasi <davidedb@gmail.com>.
 # Ported to Python 3.3 venv by Andrew Svetlov <andrew.svetlov@gmail.com>
 
@@ -13,10 +16,14 @@ alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PA
 deactivate nondestructive
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 setenv VIRTUAL_ENV "/home/2024spring_41class_team7/Backend/venv"
 =======
 setenv VIRTUAL_ENV "/Users/jeonghansaem/Downloads/hs2/2024spring_41class_team7/Backend/venv"
 >>>>>>> b5f2d9130d8143d5d4b9ed685ec013a43780fb62
+=======
+setenv VIRTUAL_ENV "/home/SE0529/2024spring_41class_team7/Backend/venv"
+>>>>>>> main
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/bin:$PATH"
