@@ -2,3 +2,7 @@ fastapi
 uvicorn
 jinja2
 python-dotenv
+pydantic-settings
+sqlalchemy
+pymysql
+cryptography
