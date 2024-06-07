@@ -51,7 +51,7 @@ const StyledModal = styled(Modal)`
     padding: 0 !important;
     max-width: 500px;
     margin: auto;
-    margin-top: 20px;
+    margin-top: 50px;
   }
 `;
 
@@ -84,7 +84,7 @@ const Button2 = styled.button`
 `;
 
 const data = [
-  { id: 1, text: 'shdfkashf;kuwiehksfjdcbfbbjskdasdjfba;sjbc,mcksjdq;kjsahxcb,mxvb,ajsdhf;kjh;seihtrlkwnasd,mxcvn,.xczbv;kasehf;lqaesd,mx cx.m' },
+  { id: 1, text: '안녕하시오저는 누누누누누누누누누ㅜㄴㄹ넘;ㅣㄴ올;먀ㅗㄴ더ㅏ우런뮤ㅏㅕ노다고지ㅏㅓ누피ㅏㅜ피너ㅏㅙ햐ㅕㅈ도새ㅑㅗㅈ;미라ㅗ니;ㅏㅗㅇ리ㅏㅜㅋㅌ처,ㅜㄴ아뢔ㅔ쟈ㅗㄷ긴망;ㅣ라ㅟㄴㅁㅇ푸 ,튜파ㅓㄴ아롲대ㅑㅗㄹ;나ㅣㅓㅜㅇㄹ,ㅡ피' },
   { id: 2, text: 'Data 2' },
   { id: 3, text: 'Data 3' }
 ];

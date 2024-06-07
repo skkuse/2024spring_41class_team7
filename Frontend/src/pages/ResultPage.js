@@ -4,6 +4,7 @@ import { createGlobalStyle } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Plotly from 'plotly.js-dist';
 import Header from '../components/Header';
+import { Link } from 'react-router-dom';
 
 
 const Wrapper = styled.div`
@@ -42,10 +43,11 @@ const FirstBox = styled.div`
   margin-bottom: 20px;
 `;
 
-const FirstBoxLeft = styled.div`
+const FirstBoxLeft = styled(Link)`
   color: #4F6F52;
   font-size: 50px;
   font-weight: bold;
+  text-decoration-line: none;
 `;
 
 const Box = styled.div`
@@ -203,7 +205,7 @@ function ResultPage() {
       <Container>
         <Header />
         <FirstBox>
-          <FirstBoxLeft>Green Coders</FirstBoxLeft>
+          <FirstBoxLeft to="/">Green Coders</FirstBoxLeft>
         </FirstBox>
         <Box>
           <InnerBoxLeft>

@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import React, { useState } from 'react';
 
 const titleColor = '#4F6F52';
+
 const Box = styled.div`
   width: 105%;
   display: flex;
@@ -15,21 +16,14 @@ const Box = styled.div`
   margin-bottom: 20px;
 `;
 
-const HeaderBox = styled(Link)`
-  font-weight: bold;
-  text-decoration: none;
-  color: inherit;
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
 const HeaderButton = styled.button`
   font-weight: bold;
   background-color: #FFF;
   border: none;
+  margin-left: 30px;
   &:hover {
     cursor: pointer;
+    color: ${titleColor};
   }
 `;
 
@@ -110,7 +104,6 @@ export default function Header() {
   };
   return (
     <Box>
-      <HeaderBox to="/">Green Coder</HeaderBox>
       <HeaderButton onClick={openModal}>About</HeaderButton>
       <StyledModal
         isOpen={isModalOpen}

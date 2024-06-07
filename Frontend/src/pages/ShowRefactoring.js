@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useEffect } from 'react';
 import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const buttonColor = '#1A4D2E';
 const titleColor = '#4F6F52';
@@ -51,7 +52,7 @@ const FormContainer = styled.div`
   }
 `;
 
-const HeaderBox = styled.div`
+const HeaderBox = styled(Link)`
   background-color: ${layerColor1};
   font-size: 50px;
   font-weight: bold;
@@ -64,6 +65,7 @@ const HeaderBox = styled.div`
   text-indent: 50px;
   margin-bottom: 20px;
   position: relative;
+  text-decoration-line: none;
 `;
 
 const SubTitle = styled.h2`
@@ -110,7 +112,7 @@ function ShowRefactoring() {
     <Wrapper>
       <Container>
         <Header />
-        <HeaderBox>
+        <HeaderBox to="/">
           Green Coders
           <Button onClick={handleCodeConversion}>Code analysis</Button>
         </HeaderBox>
