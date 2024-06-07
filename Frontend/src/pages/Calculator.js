@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import Header from '../components/Header';
 
 const buttonColor = '#1A4D2E';
 const titleColor = '#4F6F52';
@@ -11,32 +12,46 @@ const backColor = '#FFFFFF';
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
+  height: 100vh;
   width: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+  flex-direction: column;
 `;
 
-const Header = styled.div`
+const HeaderBox = styled.div`
   background-color: ${layerColor1};
   font-size: 50px;
   font-weight: bold;
-  width: 80%;
+  width: 100%;
   height: 100px;
   line-height: 100px;
   color: ${titleColor};
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-indent: 50px;
+  margin-bottom: 20px;
 `;
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  background-color: ${backColor};
-  min-height: calc(100vh - 80px);
-  margin-top: 80px;
+  flex-direction: column;
+  background: transparent;
+  margin: 1vh;
   width: 80%;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+`;
+
+const Box = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 10px 0;
+  border-radius: 10px;
+  width: 100%;
 `;
 
 const FormContainer = styled.div`
@@ -44,9 +59,21 @@ const FormContainer = styled.div`
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 70%;
-  margin-right: 40px;
+  margin-right: 20px;
   text-align: center;
+  box-sizing: border-box;
 `;
+
+const SettingsContainer = styled.div`
+  background-color: ${layerColor1};
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  width: 30%;
+  height: auto;
+  box-sizing: border-box;
+`;
+
 
 const InputSection = styled.div`
   margin-bottom: 20px;
@@ -59,14 +86,6 @@ const TextArea = styled.textarea`
   border: 1px solid #ccc;
   padding: 10px;
   font-size: 16px;
-`;
-
-const SettingsContainer = styled.div`
-  background-color: ${layerColor1};
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 30%;
-  
 `;
 
 const SettingItem = styled.div`
@@ -118,10 +137,12 @@ const SubTitle = styled.h2`
 `;
 
 const SubTitle2 = styled.h2`
-  font-size: 21px;
+  font-size: 20px;
   font-weight: bold;
   color: ${titleColor};
   margin: 20px;
+  margin-bottom: 30px;
+  text-align: center;
 `;
 
 const Button2 = styled.button`
@@ -205,38 +226,41 @@ function Calculator() {
 
   return (
     <Wrapper>
-      <Header>Green Coders</Header>
       <Container>
-        <FormContainer>
-          <SubTitle>Input Code</SubTitle>
-          <Button2 selected={visibility === 'public'} onClick={() => setVisibility('public')}>Public</Button2>
-          <Button2 selected={visibility === 'private'} onClick={() => setVisibility('private')}>Private</Button2>
-          <InputSection>
-            <TextArea
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="Enter your Java code here"
-            />
-          </InputSection>
-        </FormContainer>
-        <SettingsContainer>
-          <SubTitle2>Details about your algorithm</SubTitle2>
-          <SettingItem>
-            <Label>CPU specification</Label>
-            <Button3 selected={cpu === 'Low'} onClick={() => setCPU('Low')}>Low</Button3>
-            <Button3 selected={cpu === 'Mid'} onClick={() => setCPU('Mid')}>Mid</Button3>
-            <Button3 selected={cpu === 'High'} onClick={() => setCPU('High')}>High</Button3>
-          </SettingItem>
-          <SettingItem>
-            <Label>Number of cores</Label>
-            <Input type="number" value={cores} onChange={(e) => setCores(parseInt(e.target.value))} />
-          </SettingItem>
-          <SettingItem>
-            <Label>Memory available (in GB)</Label>
-            <Input type="number" value={memory} onChange={(e) => setMemory(parseInt(e.target.value))} />
-          </SettingItem>
-          <Button onClick={handleSubmit}>Run</Button>
-        </SettingsContainer>
+        <Header />
+        <HeaderBox>Green Coders</HeaderBox>
+        <Box>
+          <FormContainer>
+            <SubTitle>Input Code</SubTitle>
+            <Button2 selected={visibility === 'public'} onClick={() => setVisibility('public')}>Public</Button2>
+            <Button2 selected={visibility === 'private'} onClick={() => setVisibility('private')}>Private</Button2>
+            <InputSection>
+              <TextArea
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="Enter your Java code here"
+              />
+            </InputSection>
+          </FormContainer>
+          <SettingsContainer>
+            <SubTitle2>Details about your algorithm</SubTitle2>
+            <SettingItem>
+              <Label>CPU specification</Label>
+              <Button3 selected={cpu === 'Low'} onClick={() => setCPU('Low')}>Low</Button3>
+              <Button3 selected={cpu === 'Mid'} onClick={() => setCPU('Mid')}>Mid</Button3>
+              <Button3 selected={cpu === 'High'} onClick={() => setCPU('High')}>High</Button3>
+            </SettingItem>
+            <SettingItem>
+              <Label>Number of cores</Label>
+              <Input type="number" value={cores} onChange={(e) => setCores(parseInt(e.target.value))} />
+            </SettingItem>
+            <SettingItem>
+              <Label>Memory available (in GB)</Label>
+              <Input type="number" value={memory} onChange={(e) => setMemory(parseInt(e.target.value))} />
+            </SettingItem>
+            <Button onClick={handleSubmit}>Run</Button>
+          </SettingsContainer>
+        </Box>
       </Container>
     </Wrapper>
   );

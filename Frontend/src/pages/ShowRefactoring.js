@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useEffect } from 'react';
+import Header from '../components/Header';
+import { useNavigate } from 'react-router-dom';
 
 const buttonColor = '#1A4D2E';
 const titleColor = '#4F6F52';
@@ -16,13 +18,22 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.div` 
-  justify-content: center;
-  display: flex; 
-  align-items: flex-start;
-  background-color: ${backColor};
-  min-height: calc(100vh - 80px);
-  margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  margin: 1vh;
   width: 80%;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+`;
+
+const Box = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 10px 0;
+  border-radius: 10px;
+  width: 100%;
 `;
 
 const FormContainer = styled.div`
@@ -32,7 +43,6 @@ const FormContainer = styled.div`
   width: 50%;
   margin-right: 40px;
   text-align: center;
-  width: 50%; 
   margin-right: 20px;
   text-align: center;
   
@@ -41,21 +51,19 @@ const FormContainer = styled.div`
   }
 `;
 
-const Header = styled.div`
+const HeaderBox = styled.div`
   background-color: ${layerColor1};
   font-size: 50px;
   font-weight: bold;
-  width: 80%;
+  width: 100%;
   height: 100px;
   line-height: 100px;
   color: ${titleColor};
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-indent: 50px;
+  margin-bottom: 20px;
   position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 `;
 
 const SubTitle = styled.h2`
@@ -83,7 +91,9 @@ const Button = styled.button`
   font-size: 20px;
   border: none;
   cursor: pointer;
-  margin-right: 30px;
+  margin-left: 500px;
+  margin-top: 20px;
+  position: absolute;
 
   &:hover {
     background-color: #45a049;
@@ -91,23 +101,29 @@ const Button = styled.button`
 `;
 
 function ShowRefactoring() {
-
+  const navigate = useNavigate();
+  const handleCodeConversion = () => {
+    navigate('/resultpage');
+  };
 
   return (
     <Wrapper>
-      <Header>
-        Green Coders
-        <Button>Code analysis</Button>
-      </Header>
       <Container>
-        <FormContainer>
-          <SubTitle>User Code</SubTitle>
-          <ShowCode></ShowCode>
-        </FormContainer>
-        <FormContainer>
-          <SubTitle>Green Code</SubTitle>
-          <ShowCode></ShowCode>
-        </FormContainer>
+        <Header />
+        <HeaderBox>
+          Green Coders
+          <Button onClick={handleCodeConversion}>Code analysis</Button>
+        </HeaderBox>
+        <Box>
+          <FormContainer>
+            <SubTitle>User Code</SubTitle>
+            <ShowCode></ShowCode>
+          </FormContainer>
+          <FormContainer>
+            <SubTitle>Green Code</SubTitle>
+            <ShowCode></ShowCode>
+          </FormContainer>
+        </Box>
       </Container>
     </Wrapper>
   );

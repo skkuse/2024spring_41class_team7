@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
 import Plotly from 'plotly.js-dist';
 import { useNavigate } from 'react-router-dom';
-
+import Header from '../components/Header';
+import Modal from 'react-modal';
 
 const Wrapper = styled.div`
   display: flex;
@@ -27,59 +28,42 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const Header = styled.div`
-  width: 105%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: transparent;
-  border-radius: 10px;
-  margin-bottom: 20px;
-`;
 
-const HeaderBox = styled.div`
-  font-weight: bold;
-`;
-
-const HeaderButton = styled.button`
-  font-weight: bold;
-  background-color: #FFF;
-  border: none;
-  &:hover {
-    cursor: pointer;
-  }
-`;
 
 const FirstBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 10px 0;
-  padding: 10px 20px;
   border-radius: 5px;
   background-color: #F5EFE6;
   width: 100%;
   height: 100px;
   box-sizing: border-box;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 `;
 
 const FirstBoxLeft = styled.div`
   color: #4F6F52;
   font-size: 50px;
   font-weight: bold;
+  text-indent: 50px;
 `;
 
 const FirstBoxRight = styled.button`
+  width: 250px;
+  height: 50px;
+  margin-right: 30px;
   color: #fff;
   background-color: #4F6F52;
   font-size: 20px;
   border-radius: 10px;
   padding: 8px 30px;
   border: none;
+  cursor: pointer;
+
   &:hover {
-    cursor: pointer;
-    background-color: #0056B3;
+    background-color: #45a049;
   }
 `;
 
@@ -101,6 +85,7 @@ const InnerBoxLeft = styled.div`
   height: 100%;
   background-color: #F5EFE6;
   box-sizing: border-box;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const InnerBoxLeftHeader = styled.div`
@@ -134,6 +119,7 @@ const InnerBoxRight = styled.div`
   height: 100%;
   background-color: #F5EFE6;
   box-sizing: border-box;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const InnerBoxRightHeader = styled.div`
@@ -179,13 +165,14 @@ const LastBox = styled.div`
   padding: 20px 0;
   margin-bottom: 50px;
   position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const LastBoxHeader = styled.div`
   text-align: center;
   font-size: 25px;
   font-weight: bold;
-  padding: 10px;
+  padding: 20px;
 `;
 
 const PatternBox = styled.div`
@@ -204,6 +191,8 @@ const PatternBoxHeader = styled.div`
   text-align: center;
   font-size: 20px;
   padding: 10px;
+  margin-top: 30px;
+  font-weight: bold;
 `;
 
 const LastBoxButton = styled.button`
@@ -216,9 +205,10 @@ const LastBoxButton = styled.button`
   color: #fff;
   background-color: #4F6F52;
   border: none;
+  cursor: pointer;
+  margin-top: 30px;
   &:hover {
-    cursor: pointer;
-    background-color: #0056B3;
+    background-color: #45a049;
   }
 `;
 
@@ -227,13 +217,14 @@ const SubPatternBox = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  padding: 20px;
 `;
 
 const Before = styled.div`
   border-radius: 10px;
   width: 50%;
   background-color: #fff;
-  margin-top: 10px;
+  margin-top: 20px;
   margin: 10px 10px 10px 20px;
   padding: 10px;
   height: 400px;
@@ -244,7 +235,7 @@ const After = styled.div`
   border-radius: 10px;
   width: 50%;
   background-color: #fff;
-  margin-top: 10px;
+  margin-top: 20px;
   margin: 10px 20px 10px 10px;
   padding: 10px;
   height: 400px;
@@ -260,7 +251,74 @@ const CodeConternts = styled.div`
   text-align: left;
 `;
 
-function MainPage(){
+const ModalContent = styled.div`
+  background: #F5EFE6;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  margin: 0 auto;
+`;
+
+const StyledModal = styled(Modal)`
+  &.ReactModal__Overlay {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+  }
+  &.ReactModal__Content {
+    inset: 40px !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 0 !important;
+    max-width: 500px;
+    margin: auto;
+    margin-top: 80px;
+  }
+`;
+
+const Button1 = styled.button`
+  background-color: #4F6F52;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  width: 70px;
+  height: 40px;
+  margin-left: 300px;
+  &:hover {
+    background-color: #45a049;
+  }
+`;
+
+const Button2 = styled.button`
+  background-color: #45a049;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  width: 70px;
+  height: 40px;
+  margin-left: 15px;
+  &:hover {
+    background-color: #4F6F52;
+  }
+`;
+
+const Toptitle = styled.h1`
+  font-weight: bold;
+  margin-top: 20px;
+  text-align: center;
+`;
+
+const TextArea = styled.textarea`
+  width: 95%;
+  height: 200px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 20px;
+`;
+
+function MainPage() {
   const graph1Ref = useRef(null);
   const graph2Ref = useRef(null);
   const innerBoxRightRef = useRef(null);
@@ -310,13 +368,20 @@ function MainPage(){
     return () => window.removeEventListener('resize', resizeGraphs);
   }, []);
 
-  return(
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  return (
     <Wrapper>
       <Container>
-        <Header>
-          <HeaderBox>Green Coder</HeaderBox>
-          <HeaderButton>About</HeaderButton>
-        </Header>
+        <Header />
         <FirstBox>
           <FirstBoxLeft>Green Coders</FirstBoxLeft>
           <FirstBoxRight onClick={handleCodeConversion}>
@@ -325,7 +390,7 @@ function MainPage(){
         </FirstBox>
         <Box>
           <InnerBoxLeft>
-            <InnerBoxLeftHeader>Earth-Mars with green algorithm</InnerBoxLeftHeader>
+            <InnerBoxLeftHeader>Earth - Mars with green algorithm</InnerBoxLeftHeader>
             <InnerBoxLeftContents>
               <img src="./img/earth.png" alt="Earth" id="earth"></img>
               <SpaceImage src="./img/space.png" alt="Space" id="space" />
@@ -358,7 +423,20 @@ function MainPage(){
           <LastBoxHeader>Best Refactoring Codes</LastBoxHeader>
           <PatternBox>
             <PatternBoxHeader>Green Pattern</PatternBoxHeader>
-            <LastBoxButton>신고하기</LastBoxButton>
+            <LastBoxButton onClick={openModal}>신고하기</LastBoxButton>
+            <StyledModal
+              isOpen={isModalOpen}
+              onRequestClose={closeModal}
+            >
+              <ModalContent>
+                <Toptitle>신고 사유</Toptitle><br />
+                <form>
+                  <TextArea></TextArea>
+                </form>
+                <Button1>신고하기</Button1>
+                <Button2 onClick={closeModal}>닫기</Button2>
+              </ModalContent>
+            </StyledModal>
             <SubPatternBox>
               <Before>
                 <Title>Before Code</Title>
