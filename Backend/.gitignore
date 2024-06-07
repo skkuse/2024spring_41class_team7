@@ -63,3 +63,6 @@ jspm_packages
 *.ntvs*
 *.njsproj
 *.sln
+
+*.pyc
+__pycache__/
