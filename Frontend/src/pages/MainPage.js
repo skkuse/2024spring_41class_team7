@@ -123,13 +123,14 @@ const InnerBoxRight = styled.div`
 `;
 
 const InnerBoxRightHeader = styled.div`
-  display: flex;
-  font-size: 20px;
+  font-size: 25px;
   font-weight: bold;
   justify-content: left;
   width: 100%;
   padding: 10px;
   box-sizing: border-box;
+  text-align: center;
+  margin-bottom: 20px;
 `;
 
 const InnerBoxRightContents = styled.div`

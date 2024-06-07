@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import Header from '../components/Header';
+import Modal from 'react-modal';
 
 const buttonColor = '#1A4D2E';
 const titleColor = '#4F6F52';
@@ -180,6 +181,70 @@ const Button3 = styled.button`
   }
 `;
 
+const StyledModal = styled(Modal)`
+  &.ReactModal__Overlay {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+  }
+  &.ReactModal__Content {
+    inset: 40px !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 0 !important;
+    max-width: 500px;
+    margin: auto;
+    margin-top: 200px;
+  }
+`;
+
+const ModalContent = styled.div`
+  background: #F5EFE6;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  margin: 0 auto;
+`;
+
+const ModalButton = styled.button`
+  background-color: #4F6F52;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  width: 70px;
+  height: 40px;
+  margin-left: 370px;
+  margin-bottom: 20px;
+  &:hover {
+    background-color: #45a049;
+  }
+`;
+
+const Title = styled.p`
+  font-weight: bold;
+  font-size: 20px;
+  margin-left: 20px;
+  padding-top: 20px;
+`;
+
+const Box2 = styled.div`
+  width: 100%;
+  height: 60%;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const Contents = styled.p`
+  margin: 20px;
+  color: red;
+  font-size: 13px;
+`;
+
+const Toptitle = styled.h1`
+  font-weight: bold;
+  margin: 20px;
+`;
+
 function Calculator() {
   const [code, setCode] = useState('');
   const [cpu, setCPU] = useState('');
@@ -187,6 +252,8 @@ function Calculator() {
   const [memory, setMemory] = useState(0);
   const [visibility, setVisibility] = useState('private');
   const [result, setResult] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -202,19 +269,26 @@ function Calculator() {
     }
     const data = { java_code: code, cpu, cores, memory, visibility };
     console.log(data);  // 데이터 형식을 확인하기 위한 로그 출력
-    const response = await fetch('/api/calculate/carbon-emission/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Error:', errorData);
-    } else {
-      const responseData = await response.json();
-      setResult(responseData.carbon_emission);
+    try {
+      const response = await fetch('/api/calculate/carbon-emission/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        setIsModalOpen(true);
+        const errorData = await response.json();
+        console.error('Error:', errorData);
+      } else {
+        const responseData = await response.json();
+        console.log(response);
+        setResult(responseData.carbon_emission);
+
+      }
+    } catch (error) {
+      setIsModalOpen(true);
     }
   };
   useEffect(() => {
@@ -223,6 +297,10 @@ function Calculator() {
       navigate('/showrefactoring');
     }
   }, [result, navigate]);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <Wrapper>
@@ -262,6 +340,21 @@ function Calculator() {
           </SettingsContainer>
         </Box>
       </Container>
+      <StyledModal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        contentLabel="Error Modal"
+      >
+        <ModalContent>
+          <Toptitle>Error!</Toptitle>
+          <Box2>
+            <Title>실행되는 자바코드를 넣어주세요!</Title>
+            <Contents>* 클래스 이름을 Main으로 해주세요.</Contents>
+            <Contents>* 오타가 없는지 확인해주세요.</Contents>
+            <ModalButton onClick={closeModal}>Close</ModalButton>
+          </Box2>
+        </ModalContent>
+      </StyledModal>
     </Wrapper>
   );
 }
