@@ -52,7 +52,7 @@ const StyledModal = styled(Modal)`
     padding: 0 !important;
     max-width: 500px;
     margin: auto;
-    margin-top: 80px;
+    margin-top: 20px;
   }
 `;
 
@@ -65,6 +65,7 @@ const Button = styled.button`
   width: 70px;
   height: 40px;
   margin-left: 370px;
+  margin-bottom: 20px;
   &:hover {
     background-color: #45a049;
   }
@@ -73,6 +74,8 @@ const Button = styled.button`
 const Title = styled.p`
   font-weight: bold;
   font-size: 20px;
+  margin-left: 20px;
+  padding-top: 20px;
 `;
 
 const Toptitle = styled.h1`
@@ -81,40 +84,54 @@ const Toptitle = styled.h1`
   color: ${titleColor};
 `;
 
+const Box2 = styled.div`
+  width: 100%;
+  height: 60%;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const Contents = styled.p`
+  margin: 20px;
+`;
+
 Modal.setAppElement('#root');
 
 export default function Header() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
 
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
-    return (
-        <Box>
-            <HeaderBox to="/">Green Coder</HeaderBox>
-            <HeaderButton onClick={openModal}>About</HeaderButton>
-            <StyledModal
-                isOpen={isModalOpen}
-                onRequestClose={closeModal}
-            >
-                <ModalContent>
-                    <Toptitle>About Green Coders</Toptitle><br />
-                    <Title>What is Green Coders?</Title>
-                    <p>Green Coders에서 그린화 패턴을 적용하고 싶은 코드를 입력하면 <br />탄소배출량과 함께 리팩토링한 코드를 제공한다. 이를 통해 사용자는 <br />더적은 탄소를 배출하는 친환경적인 코드를 얻을 수 있다.</p><br />
-                    <Title>Why should we use green coders?</Title>
-                    <p>코드가 실행될 때 발생하는 탄소 배출량을 측정함으로써 개발자가 <br />소프트웨어의 탄소 배출량을 실감할 수 있도록 도와주어 환경 친화적인 <br />개발을 장려한다.</p><br />
-                    <Title>Carbon Emission Formula</Title>
-                    <p>𝐶 = 𝐸 × 𝐶𝐼</p>
-                    <p>𝐸 = 𝑡 × (𝑛𝑐 × 𝑃𝑐 × 𝑢𝑐 + 𝑛𝑚 × 𝑃𝑚) × 𝑃𝑈𝐸 × 0.001</p>
-                    <p>𝐶 = 𝑡 × (𝑛𝑐 × 𝑃𝑐 × 𝑢𝑐 + 𝑛𝑚 × 𝑃𝑚) × 𝑃𝑈𝐸 × 𝐶𝐼 × 0.001</p>
-                    <br />
-                    <Button onClick={closeModal}>닫기</Button>
-                </ModalContent>
-            </StyledModal>
-        </Box>
-    );
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+  return (
+    <Box>
+      <HeaderBox to="/">Green Coder</HeaderBox>
+      <HeaderButton onClick={openModal}>About</HeaderButton>
+      <StyledModal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+      >
+        <ModalContent>
+          <Toptitle>About Green Coders</Toptitle><br />
+          <Box2>
+            <Title>What is Green Coders?</Title>
+            <Contents>Green Coders에서 그린화 패턴을 적용하고 싶은 코드를 입력하면 탄소배출량과 함께 리팩토링한 코드를 제공한다. 이를 통해 사용자는 더적은 탄소를 배출하는 친환경적인 코드를 얻을 수 있다.</Contents>
+            <Title>Why should we use Green coders?</Title>
+            <Contents>최근 전산 과학 분야에서 탄소 배출량이 기하급수적으로 증가하면서, 탄소 배출을 줄이는 알고리즘 사용의 중요성이 높아지고 있다. 코드 실행 시 발생하는 탄소 배출량을 측정함으로써, 개발자들이 <br />소프트웨어의 탄소 발자국을 인식하고, 환경 친화적인 개발을 장려할 수 있도록 돕는다.</Contents>
+            <Title>Carbon Emission Formula</Title>
+            <Contents>𝐶 = 𝐸 × 𝐶𝐼</Contents>
+            <Contents>𝐸 = 𝑡 × (𝑛𝑐 × 𝑃𝑐 × 𝑢𝑐 + 𝑛𝑚 × 𝑃𝑚) × 𝑃𝑈𝐸 × 0.001</Contents>
+            <Contents>𝐶 = 𝑡 × (𝑛𝑐 × 𝑃𝑐 × 𝑢𝑐 + 𝑛𝑚 × 𝑃𝑚) × 𝑃𝑈𝐸 × 𝐶𝐼 × 0.001</Contents>
+            <br />
+            <Button onClick={closeModal}>Close</Button>
+          </Box2>
+        </ModalContent>
+      </StyledModal>
+    </Box>
+  );
 }
