@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Plotly from 'plotly.js-dist';
+import Header from '../components/Header';
 
 
 const Wrapper = styled.div`
@@ -31,13 +32,14 @@ const FirstBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 10px 0;
-  padding: 10px 20px;
   border-radius: 5px;
   background-color: #F5EFE6;
   width: 100%;
   height: 100px;
   box-sizing: border-box;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-indent: 50px;
+  margin-bottom: 20px;
 `;
 
 const FirstBoxLeft = styled.div`
@@ -64,6 +66,7 @@ const InnerBoxLeft = styled.div`
   height: 100%;
   background-color: #F5EFE6;
   box-sizing: border-box;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const InnerBoxLeftHeader = styled.div`
@@ -107,6 +110,7 @@ const CarbonPrintBox2 = styled.div`
   border-radius: 10px;
   background-color: #FFF;
   width: 100%;
+  height: 250px;
   margin: 5px;
   margin-bottom: 40px;
 `;
@@ -120,15 +124,19 @@ const ValueBox = styled.div`
   border-radius: 10px;
   background-color: #FFF;
   width: 100%;
+  height: 100px;
 `;
 const Value = styled.div`
-    font-size:20px;
-    font-weight:bold;
+    font-size: 20px;
+    font-weight: bold;
     margin-bottom: 15px;
+    height: 70%;
 `;
 
 const Explain = styled.div`
     font-size:17px;
+    height: 50px;
+    height: 20%;
 `;
 
 const InnerBoxRight = styled.div`
@@ -140,6 +148,7 @@ const InnerBoxRight = styled.div`
   height: 100%;
   background-color: #F5EFE6;
   box-sizing: border-box;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const InnerBoxRightHeader = styled.div`
@@ -150,7 +159,7 @@ const InnerBoxRightHeader = styled.div`
   width: 100%;
   padding: 10px;
   box-sizing: border-box;
-  margin-bottom: 20px;
+  margin: 20px;
 `;
 
 const InnerBoxRightContents = styled.div`
@@ -173,80 +182,81 @@ const LastBox = styled.div`
   width: 100%;
   background-color: #F5EFE6;
   height: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const BoxHeader = styled.div`
-  font-size: 35px;
-  font-weight: bold;
-  text-align: left;
   display: flex;
-  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+  justify-content: left;
   width: 100%;
+  padding: 10px;
   box-sizing: border-box;
-  height: 15%;
-  margin-left: 30px;
+  margin: 30px;
 `;
 
-function ResultPage(){
+function ResultPage() {
 
-    return(
-        <Wrapper>
-            <Container>
-                <FirstBox>
-                    <FirstBoxLeft>Green Coders</FirstBoxLeft>
-                </FirstBox>
-                <Box>
-                    <InnerBoxLeft>
-                        <InnerBoxLeftHeader>Carbon footprint</InnerBoxLeftHeader>
-                        <InnerBoxLeftContents>
-                            <CarbonPrintBox1>
-                                <img src="./img/flash.png" alt="Earth" id="flash"></img>
-                                <ValueBox><Value>2.28 kWh</Value><Explain>Energy needed</Explain></ValueBox>
-                            </CarbonPrintBox1>
-                            <CarbonPrintBox1>
-                                <img src="./img/co2.png" alt="Earth" id="co2"></img>
-                                <ValueBox><Value>948.13g CO2e</Value><Explain>Carbon footprint</Explain></ValueBox>
-                            </CarbonPrintBox1>
-                        </InnerBoxLeftContents>
-                        <InnerBoxLeftContents>
-                            <CarbonPrintBox2>
-                                <img src="./img/tree.png" alt="Earth" id="tree"></img>
-                                <ValueBox><Value>1.03 tree-months</Value><Explain>Carbon sequestration</Explain></ValueBox>
-                            </CarbonPrintBox2>
-                            <CarbonPrintBox2>
-                                <img src="./img/car.png" alt="Earth" id="car"></img>
-                                <ValueBox><Value>1.45 km</Value><Explain>In a passenger car</Explain></ValueBox>
-                            </CarbonPrintBox2>
-                            <CarbonPrintBox2>
-                                <img src="./img/aircraft.png" alt="Earth" id="aircraft"></img>
-                                <ValueBox><Value>2%</Value><Explain>Of a flight Paris-London</Explain></ValueBox>
-                            </CarbonPrintBox2>
-                        </InnerBoxLeftContents>
-                    </InnerBoxLeft>
-                    <InnerBoxRight>
-                        <InnerBoxRightHeader>
-                            분석 결과
-                        </InnerBoxRightHeader>
-                        <InnerBoxRightContents>
-                        <InnerBoxRightSubContents>기존 코드 탄소 발생</InnerBoxRightSubContents>
-                        <InnerBoxRightSubContents>1398</InnerBoxRightSubContents>
-                        </InnerBoxRightContents>
-                        <InnerBoxRightContents>
-                        <InnerBoxRightSubContents>수정된 코드 탄소 발생</InnerBoxRightSubContents>
-                        <InnerBoxRightSubContents>600</InnerBoxRightSubContents>
-                        </InnerBoxRightContents>
-                        <InnerBoxRightContents>
-                        <InnerBoxRightSubContents>에너지 소비 개선</InnerBoxRightSubContents>
-                        <InnerBoxRightSubContents>13.98%</InnerBoxRightSubContents>
-                        </InnerBoxRightContents>
-                    </InnerBoxRight>
-                </Box>
-                <LastBox>
-                    <BoxHeader>Code analysis</BoxHeader>
-                </LastBox>
-            </Container>
-        </Wrapper>
-    )
+  return (
+    <Wrapper>
+      <Container>
+        <Header />
+        <FirstBox>
+          <FirstBoxLeft>Green Coders</FirstBoxLeft>
+        </FirstBox>
+        <Box>
+          <InnerBoxLeft>
+            <InnerBoxLeftHeader>Carbon footprint</InnerBoxLeftHeader>
+            <InnerBoxLeftContents>
+              <CarbonPrintBox1>
+                <img src="./img/flash.png" alt="Earth" id="flash"></img>
+                <ValueBox><Value>2.28 kWh</Value><Explain>Energy needed</Explain></ValueBox>
+              </CarbonPrintBox1>
+              <CarbonPrintBox1>
+                <img src="./img/co2.png" alt="Earth" id="co2"></img>
+                <ValueBox><Value>948.13g CO2e</Value><Explain>Carbon footprint</Explain></ValueBox>
+              </CarbonPrintBox1>
+            </InnerBoxLeftContents>
+            <InnerBoxLeftContents>
+              <CarbonPrintBox2>
+                <img src="./img/tree.png" alt="Earth" id="tree"></img>
+                <ValueBox><Value>1.03 tree-months</Value><Explain>Carbon sequestration</Explain></ValueBox>
+              </CarbonPrintBox2>
+              <CarbonPrintBox2>
+                <img src="./img/car.png" alt="Earth" id="car"></img>
+                <ValueBox><Value>1.45 km</Value><Explain>In a passenger car</Explain></ValueBox>
+              </CarbonPrintBox2>
+              <CarbonPrintBox2>
+                <img src="./img/aircraft.png" alt="Earth" id="aircraft"></img>
+                <ValueBox><Value>2%</Value><Explain>Of a flight Paris-London</Explain></ValueBox>
+              </CarbonPrintBox2>
+            </InnerBoxLeftContents>
+          </InnerBoxLeft>
+          <InnerBoxRight>
+            <InnerBoxRightHeader>
+              분석 결과
+            </InnerBoxRightHeader>
+            <InnerBoxRightContents>
+              <InnerBoxRightSubContents>기존 코드 탄소 발생</InnerBoxRightSubContents>
+              <InnerBoxRightSubContents>1398</InnerBoxRightSubContents>
+            </InnerBoxRightContents>
+            <InnerBoxRightContents>
+              <InnerBoxRightSubContents>수정된 코드 탄소 발생</InnerBoxRightSubContents>
+              <InnerBoxRightSubContents>600</InnerBoxRightSubContents>
+            </InnerBoxRightContents>
+            <InnerBoxRightContents>
+              <InnerBoxRightSubContents>에너지 소비 개선</InnerBoxRightSubContents>
+              <InnerBoxRightSubContents>13.98%</InnerBoxRightSubContents>
+            </InnerBoxRightContents>
+          </InnerBoxRight>
+        </Box>
+        <LastBox>
+          <BoxHeader>Code analysis</BoxHeader>
+        </LastBox>
+      </Container>
+    </Wrapper>
+  )
 }
 
 export default ResultPage;
