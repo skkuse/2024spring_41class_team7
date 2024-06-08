@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import Header from '../components/Header';
 import Modal from 'react-modal';
+import { Link } from 'react-router-dom';
 
 const buttonColor = '#1A4D2E';
 const titleColor = '#4F6F52';
@@ -22,7 +23,7 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
-const HeaderBox = styled.div`
+const HeaderBox = styled(Link)`
   background-color: ${layerColor1};
   font-size: 50px;
   font-weight: bold;
@@ -34,6 +35,7 @@ const HeaderBox = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-indent: 50px;
   margin-bottom: 20px;
+  text-decoration-line: none;
 `;
 
 const Container = styled.div`
@@ -285,7 +287,6 @@ function Calculator() {
         const responseData = await response.json();
         console.log(response);
         setResult(responseData.carbon_emission);
-
       }
     } catch (error) {
       setIsModalOpen(true);
@@ -306,7 +307,7 @@ function Calculator() {
     <Wrapper>
       <Container>
         <Header />
-        <HeaderBox>Green Coders</HeaderBox>
+        <HeaderBox to="/">Green Coders</HeaderBox>
         <Box>
           <FormContainer>
             <SubTitle>Input Code</SubTitle>

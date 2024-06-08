@@ -48,6 +48,7 @@ const FirstBoxLeft = styled.div`
   font-size: 50px;
   font-weight: bold;
   text-indent: 50px;
+  cursor: pointer;
 `;
 
 const FirstBoxRight = styled.button`
