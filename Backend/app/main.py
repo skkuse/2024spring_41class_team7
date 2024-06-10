@@ -46,10 +46,10 @@ load_dotenv()
 # DB_PORT = os.getenv("DB_PORT")
 # DB_NAME = os.getenv("DB_NAME")
 #
-# DB_URL = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+DB_URL = 'mysql+pymysql://root:310036@localhost:3306/green_coders_db'
 
-# engine = create_engine(DB_URL, pool_recycle=500)
-# domains.Base.metadata.create_all(engine)
+engine = create_engine(DB_URL, pool_recycle=500)
+domains.Base.metadata.create_all(engine)
 
 templates = Jinja2Templates(directory="app/templates")
 
