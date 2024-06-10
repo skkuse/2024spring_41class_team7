@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from ..domain.domains import BuggyCode
 from ..repository.repository import BuggyCodeRepository
+from datetime import datetime
 
 import sys
 class BuggyCodesService:
@@ -14,3 +15,7 @@ class BuggyCodesService:
 
     def find_one(self, id: int):
         return self.repo.findOne(id=id)
+
+    def find_all_by_date(self, date: str):
+        return self.repo.findAllByDate(date=date)
+
