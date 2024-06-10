@@ -287,6 +287,30 @@ function Calculator() {
         const responseData = await response.json();
         console.log(response);
         setResult(responseData.carbon_emission);
+
+        const buggyCodeData = {
+          code_text: code,
+          emission_amount: responseData.carbon_emission,
+          core_type: cpu,
+          core_model: 'default',
+          core_num: cores,
+          memory: memory
+        };
+        const buggyCodeResponse = await fetch('/api/buggy_codes_controller/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(buggyCodeData),
+        });
+        if (!buggyCodeResponse.ok) {
+          console.log(JSON.stringify(buggyCodeData));
+          setIsModalOpen(true);
+          const errorData = await buggyCodeResponse.json();
+          console.error('Error saving buggy code:', errorData);
+        } else {
+          console.log(buggyCodeResponse);
+        }
       }
     } catch (error) {
       setIsModalOpen(true);
