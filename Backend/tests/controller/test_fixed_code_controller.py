@@ -1,6 +1,5 @@
 import pytest
 from fastapi.testclient import TestClient
-from werkzeug.exceptions import NotFound
 
 from Backend.app.main import app
 from Backend.app.models.response import Response, ListBody
