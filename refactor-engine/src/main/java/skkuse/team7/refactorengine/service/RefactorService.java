@@ -274,5 +274,155 @@ public class RefactorService {
 
     }
 
+    public RefactoringResult removeDuplicateObjectCreation(String inputCode) {
+        boolean isDetected = false;
+        int classStartIndex = 0;
 
+
+        List<PairInt> loops = new ArrayList<>();
+        List<Integer> objectCreations = new ArrayList<>();
+
+        String buggyPart = "";
+        String fixedPart = "";
+        int fixedPartStart = 0;
+        int fixedPartEnd = -1;
+
+        // 코드 분할
+        String[] codes = inputCode.split("\n");
+        ArrayList<String> lines = new ArrayList<>(Arrays.asList(codes));
+
+        // 검출
+        int lineSize = lines.size();
+
+        // find object creation
+        for(int i=0; i<lineSize; i++) {
+            String line = codes[i];
+            if (line.contains("public class Buggy")) {
+                classStartIndex = i;
+                continue;
+            }
+
+            Pattern objectPattern = Pattern.compile("\\b[A-Z]\\w*\\s+[a-z]\\w*\\s*=\\s*new\\s+[A-Z]\\w*\\s*\\(\\s*\\)\\s*;");
+
+            Matcher objectMatcher = objectPattern.matcher(line);
+            if (objectMatcher.find()) {
+                System.out.println("Object creation detected: " + line);
+//                    objectCreationIndex = i;
+                objectCreations.add(i);
+            }
+        }
+
+        // find for or while
+        Stack<Integer> startIdxs = new Stack<>();
+        for(int i=0; i<lineSize; i++) {
+            String line = codes[i];
+
+            Pattern forPattern = Pattern.compile("\\b(?:for|while)\\s*\\(.*?\\)\\s*\\{");
+            Pattern ifPattern = Pattern.compile("\\b(if)\\s*\\(.*?\\)\\s*\\{");
+            Matcher forMatcher = forPattern.matcher(line);
+            Matcher ifMatcher = ifPattern.matcher(line);
+            if (forMatcher.find()) {
+//                    System.out.println("loop detected: " + line);
+//                    loopCreationIndex = i;
+                startIdxs.push(i);
+            } else if (ifMatcher.find()) {
+                startIdxs.push(-1);
+            }
+            if (line.trim().equals("}")) {
+                if (startIdxs.empty()) continue;
+                int start = startIdxs.peek(); startIdxs.pop();
+                if (start != -1) {
+                    loops.add(new PairInt(start, i));
+                    System.out.println("loop detected : " + start + " ~ " + i);
+                }
+            }
+        }
+
+//            System.out.println(lines.get(objectCreationIndex));
+//            System.out.println(lines.get(loopCreationIndex));
+
+
+        // 수정
+        for (int idx=0; idx<objectCreations.size(); ++idx) {
+            int objectCreationIdx = objectCreations.get(idx);
+
+            int start = objectCreationIdx;
+            int end = objectCreationIdx;
+
+            for (int i=0; i<loops.size(); ++i) {
+                int currStart = loops.get(i).first;
+                int currEnd = loops.get(i).second;
+
+                if (currStart < objectCreationIdx && objectCreationIdx < currEnd) {
+                    if (currStart < start && end < currEnd) {
+                        start = currStart;
+                        end = currEnd;
+                    }
+                }
+            }
+
+            if (start != objectCreationIdx && end != objectCreationIdx) {
+
+                for (int k=start; k<=end; ++k) {
+                    buggyPart += (k+1) + ": " + lines.get(k) + "\n";
+                }
+
+                System.out.println(lines.get(objectCreationIdx) + " in " + start +  " ~ " + end);
+                String fixedContent = lines.get(objectCreationIdx);
+
+                int nSpace = countLeadingSpaces(lines.get(start));
+                lines.set(objectCreationIdx, "##MUSTDELETE##");
+                lines.add(start, adjustLeadingWhitespace(fixedContent, nSpace));
+
+                fixedPartStart = start;
+                fixedPartEnd = end;
+
+                break;
+            }
+        }
+
+        lines.set(classStartIndex, "public class Fixed {");
+        lines.removeIf(item -> item.equals("##MUSTDELETE##"));
+
+        if (fixedPartStart <= fixedPartEnd) {
+            for (int k=fixedPartStart; k<=fixedPartEnd; ++k) {
+                fixedPart += (k+1) + ": " + lines.get(k) + "\n";
+            }
+        }
+
+        System.out.println("BuggyPart:\n" + buggyPart);
+        System.out.println("FixedPart:\n" + fixedPart);
+
+        String fixedCode = "";
+        for (int i=0; i<lines.size(); ++i) fixedCode += lines.get(i) + "\n";
+
+        return new RefactoringResult(inputCode, fixedCode, buggyPart, fixedPart);
+    }
+
+    public static String adjustLeadingWhitespace(String str, int leadingWhitespaceCount) {
+        // 현재 문자열의 앞 공백 및 탭 문자를 제거
+        String trimmedStr = str.replaceFirst("^[ \\t]+", "");
+
+        // 주어진 수만큼 공백 및 탭 문자를 추가
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < leadingWhitespaceCount; i++) {
+            sb.append(' '); // 원하는 경우 ' ' 대신 '\t'를 사용할 수 있습니다.
+        }
+
+        // 공백 및 탭 문자를 추가한 뒤 나머지 문자열을 이어붙임
+        sb.append(trimmedStr);
+        return sb.toString();
+    }
+
+
+}
+
+class PairInt {
+    public int first;
+    public int second;
+
+    public PairInt(int x, int y) {
+        first = x;
+        second = y;
+    }
 }

@@ -229,4 +229,46 @@ class RefactorServiceTest {
         Assertions.assertThat(refactoringResult.fixedCode()).isEqualTo(mockFixedCode);
         Assertions.assertThat(refactoringResult.fixedPart()).isEqualTo(mockFixedPart);
     }
+
+    @DisplayName("객체 생성 반복 제거 리펙터링 로직")
+    @Test
+    public void testRemoveDuplicateObjectCreation1() throws Exception {
+        String mockBuggyCode =
+                  "public class Buggy {\n\n"
+                + "    public static void main(String[] args) {\n"
+                + "        for(int i=0; i<10; i++) {\n"
+                + "            A b = new A();\n"
+                + "            int x = 0;\n"
+                + "        }\n"
+                + "    }\n"
+                + "}\n";
+        String mockFixedCode =
+                  "public class Fixed {\n\n"
+                + "    public static void main(String[] args) {\n"
+                + "        A b = new A();\n"
+                + "        for(int i=0; i<10; i++) {\n"
+                + "            int x = 0;\n"
+                + "        }\n"
+                + "    }\n"
+                + "}\n";
+        String mockBuggyPart =
+                  "4:         for(int i=0; i<10; i++) {\n"
+                + "5:             A b = new A();\n"
+                + "6:             int x = 0;\n"
+                + "7:         }\n";
+        String mockFixedPart =
+                  "4:         A b = new A();\n"
+                + "5:         for(int i=0; i<10; i++) {\n"
+                + "6:             int x = 0;\n"
+                + "7:         }\n";
+        RefactorService refactorService = new RefactorService();
+        RefactoringResult refactoringResult = refactorService.removeDuplicateObjectCreation(mockBuggyCode);
+
+        Assertions.assertThat(refactoringResult.buggyCode()).isEqualTo(mockBuggyCode);
+        Assertions.assertThat(refactoringResult.buggyPart()).isEqualTo(mockBuggyPart);
+        Assertions.assertThat(refactoringResult.fixedCode()).isEqualTo(mockFixedCode);
+        Assertions.assertThat(refactoringResult.fixedPart()).isEqualTo(mockFixedPart);
+
+    }
+
 }

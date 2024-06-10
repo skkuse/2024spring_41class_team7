@@ -29,6 +29,7 @@ public class RefactorController {
         RefactoringResult refactoringResult;
         if (refactorId == 1) refactoringResult = refactorService.removeDuplicateGetSize(request, "");
         else if (refactorId == 2) refactoringResult = refactorService.removeDuplicatedIf(request);
+        else if (refactorId == 3) refactoringResult = refactorService.removeDuplicateObjectCreation(request);
         else {
             refactoringResult = new RefactoringResult("", "", "", "");
             return new ResponseEntity<>(CodePartResponse.of(-1L, refactoringResult), HttpStatus.OK);
@@ -53,6 +54,13 @@ public class RefactorController {
         while (!refactoringResult.buggyPart().equals("")) {
             currCode = refactoringResult.fixedCode();
             refactoringResult = refactorService.removeDuplicatedIf(currCode);
+        }
+
+        currCode = refactoringResult.fixedCode();
+        refactoringResult = refactorService.removeDuplicateObjectCreation(currCode);
+        while (!refactoringResult.buggyPart().equals("")) {
+            currCode = refactoringResult.fixedCode();
+            refactoringResult = refactorService.removeDuplicateObjectCreation(currCode);
         }
 
         return new ResponseEntity<EntireCodeResponse>(EntireCodeResponse.of(refactoringResult), HttpStatus.OK);
