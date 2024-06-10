@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Table from '../components/Table';
 import { useEffect } from 'react';
 import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 
 const buttonColor = '#1A4D2E';
 const titleColor = '#4F6F52';
@@ -84,15 +85,24 @@ const Button2 = styled.button`
 `;
 
 const data = [
-  { id: 1, text: '안녕하시오저는 누누누누누누누누누ㅜㄴㄹ넘;ㅣㄴ올;먀ㅗㄴ더ㅏ우런뮤ㅏㅕ노다고지ㅏㅓ누피ㅏㅜ피너ㅏㅙ햐ㅕㅈ도새ㅑㅗㅈ;미라ㅗ니;ㅏㅗㅇ리ㅏㅜㅋㅌ처,ㅜㄴ아뢔ㅔ쟈ㅗㄷ긴망;ㅣ라ㅟㄴㅁㅇ푸 ,튜파ㅓㄴ아롲대ㅑㅗㄹ;나ㅣㅓㅜㅇㄹ,ㅡ피' },
+  { id: 1, text: '누누누누누누누누누ㅜㄴㄹ넘;ㅣㄴ올;먀ㅗㄴ더ㅏ우런뮤ㅏㅕ노다고지ㅏㅓ누피ㅏㅜ피너ㅏㅙ햐ㅕㅈ도새ㅑㅗㅈ;미라ㅗ니;ㅏㅗㅇ리ㅏㅜㅋㅌ처,ㅜㄴ아뢔ㅔ쟈ㅗㄷ긴망;ㅣ라ㅟㄴㅁㅇ푸 ,튜파ㅓㄴ아롲대ㅑㅗㄹ;나ㅣㅓㅜㅇㄹ,ㅡ피' },
   { id: 2, text: 'Data 2' },
   { id: 3, text: 'Data 3' }
 ];
 
-const AdminPage = () => {
+const AdminPage = ({ auth }) => {
   const [tableData, setTableData] = useState(data);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState(null);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!auth) {
+      alert('You are not authorized to access this page.');
+      navigate('/admin');
+    }
+  }, [auth, navigate]);
   // useEffect(() => {
   //   // 데이터를 백엔드에서 가져오는 함수 호출
   //   fetchData();
