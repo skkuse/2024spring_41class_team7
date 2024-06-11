@@ -126,7 +126,7 @@ const Button = styled.button`
   font-size: 16px;
   border: none;
   cursor: pointer;
-  
+
   &:hover {
     background-color: #45a049;
   }
@@ -296,20 +296,24 @@ function Calculator() {
           core_num: cores,
           memory: memory
         };
-        const buggyCodeResponse = await fetch('/api/buggy_codes_controller/', {
+
+        const buggyCodeData1 = buggyCodeData.code_text.replace(/Main/g, 'Buggy');
+        console.log(buggyCodeData1);
+        const buggyCodeResponse = await fetch('http://localhost:8080/refactoring/all', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(buggyCodeData),
+          body: buggyCodeData1,
         });
         if (!buggyCodeResponse.ok) {
-          console.log(JSON.stringify(buggyCodeData));
+          console.log(buggyCodeResponse);
           setIsModalOpen(true);
           const errorData = await buggyCodeResponse.json();
           console.error('Error saving buggy code:', errorData);
         } else {
-          console.log(buggyCodeResponse);
+          const fixedData = await buggyCodeResponse.json();
+          console.log('result: ', fixedData.fixedCodeText);
         }
       }
     } catch (error) {
