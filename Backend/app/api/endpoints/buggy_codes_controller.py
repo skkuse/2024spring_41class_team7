@@ -1,12 +1,13 @@
 from datetime import datetime
 
-from fastapi import APIRouter, FastAPI
-
+from fastapi import APIRouter, FastAPI, Depends
+from sqlalchemy.orm import Session
 from ...domain.domains import BuggyCode
 from ...models.requests import BuggyCodeRequest
 from ...services.buggy_codes_service import BuggyCodesService
 from ...models.response import *
 from ...models.exceptions import *
+from ... import database
 
 app = FastAPI()
 
@@ -15,9 +16,12 @@ router = APIRouter()
 SUCCESS = "success"
 FAIL = "fail"
 
+
+
 @router.post("/")
-def req_create_buggy_code(new_buggy_code_req: BuggyCodeRequest):
-    new_buggy_code = BuggyCodesService.create(BuggyCode.create(new_buggy_code_req))
+def req_create_buggy_code(new_buggy_code_req: BuggyCodeRequest, db: Session = Depends(database.get_db)):
+    buggyCodesService = BuggyCodesService(db)
+    new_buggy_code = buggyCodesService.create(BuggyCode.create(new_buggy_code_req))
 
     return Response(
         status=SUCCESS,
@@ -25,8 +29,9 @@ def req_create_buggy_code(new_buggy_code_req: BuggyCodeRequest):
         onError=None
     )
 @router.get("/")
-def get_buggy_codes():
-    findBuggyCodes = BuggyCodesService.find_all()
+def get_buggy_codes(db: Session = Depends(database.get_db)):
+    buggyCodesService = BuggyCodesService(db)
+    findBuggyCodes = buggyCodesService.find_all()
 
     return Response(
         status=SUCCESS,
@@ -38,9 +43,11 @@ def get_buggy_codes():
     )
 
 @router.get("/{buggy_code_id}")
-def get_one_buggy_code(buggy_code_id: int):
+def get_one_buggy_code(buggy_code_id: int, db: Session = Depends(database.get_db)):
     try:
-        findBuggyCode = BuggyCodesService.find_one(id)
+        buggyCodesService = BuggyCodesService(db)
+        findBuggyCode = buggyCodesService.find_one(buggy_code_id)
+        if findBuggyCode is None: raise FileNotFoundError
         return Response(
             status=SUCCESS,
             onSuccess=BuggyCodeResponse.create(findBuggyCode),

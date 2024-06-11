@@ -8,6 +8,7 @@ import AdminPage from './pages/AdminPage';
 import ShowRefactoring from './pages/ShowRefactoring';
 import MainPage from './pages/MainPage';
 import ResultPage from './pages/ResultPage';
+import { useState } from 'react';
 
 const Title = styled.h1`
   margin: 0;
@@ -23,14 +24,15 @@ const MainContent = styled.main`
 `;
 
 function App() {
+  const [auth, setAuth] = useState(false);
   return (
     <Router>
       <div className="App">
         <MainContent>
           <Routes>
             <Route path="/showrefactoring" element={<ShowRefactoring />} />
-            <Route path="/adminpage" element={<AdminPage />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin" element={<Admin setAuth={setAuth} />} />
+            <Route path="/adminpage" element={<AdminPage auth={auth} />} />
             <Route path="/calculator" element={<Calculator />} />
             <Route path="/" element={<MainPage />} />
             <Route path="/resultpage" element={<ResultPage />} />

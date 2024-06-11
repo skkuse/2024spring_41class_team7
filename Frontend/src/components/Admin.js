@@ -55,17 +55,16 @@ const H1 = styled.h1`
   color: ${titleColor};
 `;
 
-function Admin() {
+const Admin = ({ setAuth }) => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would handle the authentication logic
-    if (password === 'ss') {
+    if (password === 'team7admin') {
+      setAuth(true);
       alert('Login successful!');
       navigate('/adminpage');
-      // Redirect or show admin content
     } else {
       alert('Incorrect password.');
     }
