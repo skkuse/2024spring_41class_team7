@@ -216,7 +216,7 @@ function ResultPage() {
                 <ValueBox><Value>2.28 kWh</Value><Explain>Energy needed</Explain></ValueBox>
               </CarbonPrintBox1>
               <CarbonPrintBox1>
-                <img src="./img/co2.png" alt="Earth" id="co2"></img>
+                <img src="./img/CO2.png" alt="Earth" id="co2"></img>
                 <ValueBox><Value>948.13g CO2e</Value><Explain>Carbon footprint</Explain></ValueBox>
               </CarbonPrintBox1>
             </InnerBoxLeftContents>
