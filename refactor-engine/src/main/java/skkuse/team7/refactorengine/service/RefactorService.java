@@ -6,7 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,7 +27,7 @@ public class RefactorService {
         String buggyPart = "";
         String fixedPart = "";
 
-        int classStartIndex = 0;
+        int classStartIndex = -1;
 
 
         // 코드 분할
@@ -35,6 +37,7 @@ public class RefactorService {
         // 검출
         int buggyLine = -1;
         String arrayListVariableName = "";
+        String targetName;
         int lineSize = lines.size();
 
         for(int i=0; i<lineSize; i++) {
@@ -65,11 +68,13 @@ public class RefactorService {
                     }
                 }
             }
+
+            if (isDetected) break;
         }
 
         // 수정
 
-        lines.set(classStartIndex, "public class Fixed {");
+        if (classStartIndex >= 0) lines.set(classStartIndex, "public class Fixed {");
         if(isDetected) {
             int count = countLeadingSpaces(lines.get(buggyLine));
 
@@ -111,6 +116,7 @@ public class RefactorService {
         // 코드 분할
         String[] codes = inputCode.split("\n");
         ArrayList<String> lines = new ArrayList<>(Arrays.asList(codes));
+        int classStartIndex = -1;
 
         //====== my code =======//
         List<Integer> startIfIndexes = new ArrayList<>();
@@ -131,6 +137,13 @@ public class RefactorService {
             endIfIndexes.clear();
             conditions.clear();
             s.clear();
+
+            if(lines.get(idx).contains("public class Buggy")) {
+                classStartIndex = idx;
+                continue;
+            }
+
+
 
             while (idx < lines.size()) {
                 String line = lines.get(idx);
@@ -229,7 +242,7 @@ public class RefactorService {
             for (String line : lines) {
                 newLines.add(line);
             }
-            newLines.set(0, "public class Fixed {");
+            if (classStartIndex >= 0) newLines.set(classStartIndex, "public class Fixed {");
             String totalCoditions = conditions.get(0);
             for (int i=1; i<nNestedIf; ++i) {
                 totalCoditions += " && "+ conditions.get(i);
@@ -258,7 +271,6 @@ public class RefactorService {
         for (int i=0; i<newLines.size(); ++i) {
             String line = newLines.get(i);
             fixedCode += line + "\n";
-            System.out.println(newLines.get(i));
         }
 
 
@@ -276,7 +288,7 @@ public class RefactorService {
 
     public RefactoringResult removeDuplicateObjectCreation(String inputCode) {
         boolean isDetected = false;
-        int classStartIndex = 0;
+        int classStartIndex = -1;
 
 
         List<PairInt> loops = new ArrayList<>();
@@ -306,7 +318,6 @@ public class RefactorService {
 
             Matcher objectMatcher = objectPattern.matcher(line);
             if (objectMatcher.find()) {
-                System.out.println("Object creation detected: " + line);
 //                    objectCreationIndex = i;
                 objectCreations.add(i);
             }
@@ -333,7 +344,6 @@ public class RefactorService {
                 int start = startIdxs.peek(); startIdxs.pop();
                 if (start != -1) {
                     loops.add(new PairInt(start, i));
-                    System.out.println("loop detected : " + start + " ~ " + i);
                 }
             }
         }
@@ -381,7 +391,7 @@ public class RefactorService {
             }
         }
 
-        lines.set(classStartIndex, "public class Fixed {");
+        if (classStartIndex >= 0) lines.set(classStartIndex, "public class Fixed {");
         lines.removeIf(item -> item.equals("##MUSTDELETE##"));
 
         if (fixedPartStart <= fixedPartEnd) {
@@ -389,9 +399,6 @@ public class RefactorService {
                 fixedPart += (k+1) + ": " + lines.get(k) + "\n";
             }
         }
-
-        System.out.println("BuggyPart:\n" + buggyPart);
-        System.out.println("FixedPart:\n" + fixedPart);
 
         String fixedCode = "";
         for (int i=0; i<lines.size(); ++i) fixedCode += lines.get(i) + "\n";
