@@ -254,6 +254,7 @@ function Calculator() {
   const [memory, setMemory] = useState(0);
   const [visibility, setVisibility] = useState('private');
   const [result, setResult] = useState(null);
+  const [buggyCodeId, setBuggyCodeId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
 
@@ -296,7 +297,8 @@ function Calculator() {
           core_num: cores,
           memory: memory
         };
-        const buggyCodeResponse = await fetch('/api/buggy_codes_controller/', {
+
+        const buggyCodeResponse = await fetch('/api/buggyCodes/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -309,19 +311,26 @@ function Calculator() {
           const errorData = await buggyCodeResponse.json();
           console.error('Error saving buggy code:', errorData);
         } else {
-          console.log(buggyCodeResponse);
+          const buggyResponseData = await buggyCodeResponse.json();
+          console.log('Result:', buggyResponseData);
+
+          if (buggyResponseData.status === 'success') {
+            const id = buggyResponseData.onSuccess.buggy_code_id;
+            setBuggyCodeId(id);
+            setResult(responseData.carbon_emission);
+            navigate(`/showrefactoring?buggyCodeId=${id}`);
+          } else {
+            console.error('Error:', buggyResponseData.onError);
+          }
         }
+        //리팩토링
+
       }
     } catch (error) {
       setIsModalOpen(true);
     }
   };
-  useEffect(() => {
-    if (result !== null) {
-      console.log(result); //탄소배출량 결과
-      navigate('/showrefactoring');
-    }
-  }, [result, navigate]);
+
 
   const closeModal = () => {
     setIsModalOpen(false);

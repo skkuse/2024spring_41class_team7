@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="skkuse.team7.refactorengine.RefactorEngineApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-06-11T08:42:14" hostname="jeonghansaem-ui-MacBookAir.local" time="0.391">
+  <properties/>
+  <testcase name="contextLoads()" classname="skkuse.team7.refactorengine.RefactorEngineApplicationTests" time="0.391"/>
+  <system-out><![CDATA[17:42:14.268 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [skkuse.team7.refactorengine.RefactorEngineApplicationTests]: RefactorEngineApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+17:42:14.303 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration skkuse.team7.refactorengine.RefactorEngineApplication for test class skkuse.team7.refactorengine.RefactorEngineApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.5)
+
+2024-06-11T17:42:14.431+09:00  INFO 11884 --- [refactor-engine] [    Test worker] s.t.r.RefactorEngineApplicationTests     : Starting RefactorEngineApplicationTests using Java 17.0.6 with PID 11884 (started by jeonghansaem in /Users/jeonghansaem/Downloads/new/2024spring_41class_team7/refactor-engine)
+2024-06-11T17:42:14.432+09:00  INFO 11884 --- [refactor-engine] [    Test worker] s.t.r.RefactorEngineApplicationTests     : No active profile set, falling back to 1 default profile: "default"
+2024-06-11T17:42:14.785+09:00  INFO 11884 --- [refactor-engine] [    Test worker] s.t.r.RefactorEngineApplicationTests     : Started RefactorEngineApplicationTests in 0.432 seconds (process running for 0.855)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

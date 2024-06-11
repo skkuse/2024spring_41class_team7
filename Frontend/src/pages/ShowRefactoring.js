@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useEffect } from 'react';
 import Header from '../components/Header';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 const buttonColor = '#1A4D2E';
@@ -43,9 +43,7 @@ const FormContainer = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 50%;
   margin-right: 40px;
-  text-align: center;
   margin-right: 20px;
-  text-align: center;
   
   &:last-child {
     margin-right: 0;
@@ -73,15 +71,18 @@ const SubTitle = styled.h2`
   font-weight: bold;
   color: ${titleColor};
   margin: 50px;
+  text-align: center;
 `;
 
 const ShowCode = styled.div`
-    width: 90%;
+    width: 80%;
     margin-left: 5%;
     margin-bottom: 30px;
     min-height: calc(100vh - 80px);
     background-color: ${backColor};
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    white-space: pre;
+    padding: 25px;
 `;
 
 const Button = styled.button`
@@ -104,6 +105,39 @@ const Button = styled.button`
 
 function ShowRefactoring() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [userCode, setUserCode] = useState('');
+  const [greenCode, setGreenCode] = useState('');
+  const [error, setError] = useState(null);
+
+  const queryParams = new URLSearchParams(location.search);
+  const buggyCodeId = queryParams.get('buggyCodeId');
+  console.log(buggyCodeId);
+
+  useEffect(() => {
+    if (buggyCodeId) {
+      fetch(`/api/buggyCodes/${buggyCodeId}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.status === 'success') {
+            setUserCode(data.onSuccess.code_text);
+            setGreenCode(data.onSuccess.fixed_code || '');
+          } else {
+            throw new Error(data.onError.message || 'Error fetching code data');
+          }
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+          setError(error.message);
+        });
+    }
+  }, [buggyCodeId]);
+
   const handleCodeConversion = () => {
     navigate('/resultpage');
   };
@@ -119,11 +153,11 @@ function ShowRefactoring() {
         <Box>
           <FormContainer>
             <SubTitle>User Code</SubTitle>
-            <ShowCode></ShowCode>
+            <ShowCode>{userCode}</ShowCode>
           </FormContainer>
           <FormContainer>
             <SubTitle>Green Code</SubTitle>
-            <ShowCode></ShowCode>
+            <ShowCode>{greenCode}</ShowCode>
           </FormContainer>
         </Box>
       </Container>
