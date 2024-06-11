@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import cast, Date
 from ..domain.domains import  *
 
 
@@ -16,6 +17,9 @@ class BuggyCodeRepository:
         self.db.commit()
         self.db.refresh(buggy_code)
         return buggy_code
+
+    def findAllByDate(self, date: str):
+        return self.db.query(BuggyCode).filter(cast(BuggyCode.created_at, Date) == date).all()
 
 class FixedCodeRepository:
     def __init__(self, db:Session):
