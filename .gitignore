@@ -4,6 +4,7 @@
 Frontend/node_modules
 Frontend/.env
 Backend/.env
+refactor-engine/.gradle
 /.pnp
 .pnp.js
 
