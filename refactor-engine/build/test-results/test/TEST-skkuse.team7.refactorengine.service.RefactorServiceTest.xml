@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="skkuse.team7.refactorengine.service.RefactorServiceTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2024-06-11T15:38:02" hostname="Ubin108" time="0.094">
+  <properties/>
+  <testcase name=".size() 반복 제거 리펙터링 로직 (in while statement)" classname="skkuse.team7.refactorengine.service.RefactorServiceTest" time="0.065"/>
+  <testcase name=".size() 반복 제거 리펙터링 로직 (in for statement)" classname="skkuse.team7.refactorengine.service.RefactorServiceTest" time="0.004"/>
+  <testcase name="중첩된 if 제거 리펙터링 로직" classname="skkuse.team7.refactorengine.service.RefactorServiceTest" time="0.005"/>
+  <testcase name="객체 생성 반복 제거 리펙터링 로직" classname="skkuse.team7.refactorengine.service.RefactorServiceTest" time="0.011"/>
+  <testcase name="중첩된 if 제거 리펙터링 로직 - 제거할 것이 없는 경우 Buggy 클래스를 그대로 리턴한다." classname="skkuse.team7.refactorengine.service.RefactorServiceTest" time="0.002"/>
+  <system-out><![CDATA[public class Fixed {
+    public static void main(String[] args) {
+        boolean cond1 = true;
+        boolean cond2 = true;
+        boolean cond3 = false;
+        boolean cond4 = false;
+
+        if (cond1 && cond2 && cond3) {
+
+
+                    System.out.println("Hello");
+                    System.out.println("Hello");
+                    System.out.println("Hello");
+
+
+        }
+    }
+}
+Object creation detected:             A b = new A();
+loop detected : 3 ~ 6
+            A b = new A(); in 3 ~ 6
+BuggyPart:
+4:         for(int i=0; i<10; i++) {
+5:             A b = new A();
+6:             int x = 0;
+7:         }
+
+FixedPart:
+4:         A b = new A();
+5:         for(int i=0; i<10; i++) {
+6:             int x = 0;
+7:         }
+
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

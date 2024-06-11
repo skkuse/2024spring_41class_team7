@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="skkuse.team7.refactorengine.RefactorEngineApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-06-11T15:38:01" hostname="Ubin108" time="0.995">
+  <properties/>
+  <testcase name="contextLoads()" classname="skkuse.team7.refactorengine.RefactorEngineApplicationTests" time="0.995"/>
+  <system-out><![CDATA[00:37:59.319 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [skkuse.team7.refactorengine.RefactorEngineApplicationTests]: RefactorEngineApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+00:37:59.487 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration skkuse.team7.refactorengine.RefactorEngineApplication for test class skkuse.team7.refactorengine.RefactorEngineApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.5)
+
+2024-06-12T00:37:59.931+09:00  INFO 1404 --- [refactor-engine] [    Test worker] s.t.r.RefactorEngineApplicationTests     : Starting RefactorEngineApplicationTests using Java 17.0.11 with PID 1404 (started by root in /home/2024spring_41class_team7/refactor-engine)
+2024-06-12T00:37:59.934+09:00  INFO 1404 --- [refactor-engine] [    Test worker] s.t.r.RefactorEngineApplicationTests     : No active profile set, falling back to 1 default profile: "default"
+2024-06-12T00:38:01.276+09:00  INFO 1404 --- [refactor-engine] [    Test worker] s.t.r.RefactorEngineApplicationTests     : Started RefactorEngineApplicationTests in 1.627 seconds (process running for 3.097)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
