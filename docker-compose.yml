@@ -2,20 +2,46 @@ version: '3.8'
 
 services:
   backend:
-    build: ./Backend
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     environment:
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - DB_HOST=green-db
+      - DB_PORT=3306
+      - DB_NAME=green_coders_db
+      - DB_USER=se
+      - DB_PASSWORD=310036
+      - MYSQL_ROOT_PASSWORD=1234
+    networks:
+      - app-network
+
+  refactor-engine:
+    build:
+      context: ./refactor-engine
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
 
   frontend:
-    build: ./Frontend
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
     expose:
-      - "3000:3000"
+      - "3000"
     depends_on:
       - backend
+      - refactor-engine
     environment:
       - WDS_SOCKET_PORT=0
+    networks:
+      - app-network
+
+  
 
   nginx:
     image: nginx:latest
@@ -26,3 +52,10 @@ services:
     depends_on:
       - frontend
       - backend
+      - refactor-engine
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
