@@ -1,5 +1,7 @@
 package skkuse.team7.refactorengine.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,9 +44,15 @@ public class RefactorController {
 
         Integer sig = 1;
         String currCode = request;
+
+        int nRefactoring1 = 0;
+        int nRefactoring2 = 0;
+        int nRefactoring3 = 0;
+
         RefactoringResult refactoringResult = refactorService.removeDuplicateGetSize(currCode, sig.toString());
         while (!refactoringResult.buggyPart().equals("")) {
             sig += 1;
+            nRefactoring1++;
             currCode = refactoringResult.fixedCode();
             refactoringResult = refactorService.removeDuplicateGetSize(currCode, sig.toString());
         }
@@ -52,6 +60,7 @@ public class RefactorController {
         currCode = refactoringResult.fixedCode();
         refactoringResult = refactorService.removeDuplicatedIf(currCode);
         while (!refactoringResult.buggyPart().equals("")) {
+            nRefactoring2++;
             currCode = refactoringResult.fixedCode();
             refactoringResult = refactorService.removeDuplicatedIf(currCode);
         }
@@ -59,10 +68,16 @@ public class RefactorController {
         currCode = refactoringResult.fixedCode();
         refactoringResult = refactorService.removeDuplicateObjectCreation(currCode);
         while (!refactoringResult.buggyPart().equals("")) {
+            nRefactoring3++;
             currCode = refactoringResult.fixedCode();
             refactoringResult = refactorService.removeDuplicateObjectCreation(currCode);
         }
 
-        return new ResponseEntity<EntireCodeResponse>(EntireCodeResponse.of(refactoringResult), HttpStatus.OK);
+        List<Integer> nRefactoring = new ArrayList<>();
+        nRefactoring.add(nRefactoring1);
+        nRefactoring.add(nRefactoring2);
+        nRefactoring.add(nRefactoring3);
+
+        return new ResponseEntity<EntireCodeResponse>(EntireCodeResponse.of(refactoringResult, nRefactoring), HttpStatus.OK);
     }
 }
