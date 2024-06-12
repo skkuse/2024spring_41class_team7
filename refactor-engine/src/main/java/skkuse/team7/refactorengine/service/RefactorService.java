@@ -130,6 +130,8 @@ public class RefactorService {
         boolean isDuplicatedIfDetect = false;
         int nIf = 0;
         int nNestedIf = 1;
+        int startNested = -1;
+        int endNested = -1;
 
         while (!isDuplicatedIfDetect && idx < lines.size()) {
             nIf = 0;
@@ -177,41 +179,118 @@ public class RefactorService {
             }
 
             nNestedIf = 1;
+
             for (int i = 1; i < nIf; ++i) {
-                if (endIfIndexes.get(i - 1) > endIfIndexes.get(i))
+                if (endIfIndexes.get(i - 1) > endIfIndexes.get(i)) {
+                    if (nNestedIf == 1) startNested = i - 1;
                     nNestedIf++;
-                else {
-                    nNestedIf--;
-                    break;
+                    endNested = i;
+                } else {
+
+                    while (endIfIndexes.get(startNested) > endIfIndexes.get(i)) startNested++;
+
+                    if (startNested != endNested) break;
+                    else {
+                        nNestedIf = 1;
+                        startNested = i;
+                        endNested = i;
+                    }
                 }
             }
-            // 중첩된 if 문이 없다면 (nNestedIf=1) 중첩 if 문 탐지 하지 않았으므로 false
-            if (nNestedIf == 1) isDuplicatedIfDetect = false;
 
-            // 중첩된 if 문 사이에 다른 statement가 있는지 검사, 있을 경우 중첩 if문 아니므로 isDetect=false
-            for (int i=1; i<nNestedIf; ++i) {
+
+
+
+            // 중첩된 if 문이 없다면 (nNestedIf=1) 중첩 if 문 탐지 하지 않았으므로 false
+            if (startNested == endNested) isDuplicatedIfDetect = false;
+
+//            startIfIndexes.forEach(i -> {
+//                System.out.print(i.toString() + " ");
+//            });
+//            System.out.println();
+//
+//            endIfIndexes.forEach(i -> {
+//                System.out.print(i.toString() + " ");
+//            });
+//            System.out.println();
+            // 중첩된 if 문 사이에 다른 statement가 있는지 검사,
+            // 중첩된 if문 사이에 다른 statement가 없는 가장 빠른 if문 열의 시작과 끝을 리턴
+            int tmpStartNested = startNested;
+            for (int i=startNested+1; i<=endNested; ++i) {
                 int start = startIfIndexes.get(i-1);
                 int end = startIfIndexes.get(i);
+                boolean flag = true;
+
+                // if문 중간에 비어있나? 비어있으면 flag = true
                 for (int j=start+1; j<end; ++j) {
                     if (!lines.get(j).trim().equals("")) {
-                        isDuplicatedIfDetect = false;
+                        flag = false;
                         break;
                     }
                 }
-                if (!isDuplicatedIfDetect) break;
+                if (flag) break;
+                tmpStartNested++;
             }
 
-            // 중첩된 '}'문 사이에 다른 statement가 있는지 검사. 있을 경우 detect는 false
-            for (int i=nNestedIf-1; i>0; i--) {
+            int tmpEndNested = tmpStartNested;
+
+            for (int i=tmpStartNested; i<endNested; ++i) {
                 int start = startIfIndexes.get(i);
-                int end = startIfIndexes.get(i-1);
+                int end = startIfIndexes.get(i+1);
+                boolean flag = false;
                 for (int j=start+1; j<end; ++j) {
                     if (!lines.get(j).trim().equals("")) {
-                        isDuplicatedIfDetect = false;
+                        flag = true;
                         break;
                     }
                 }
+                if (flag) break;
+                tmpEndNested++;
             }
+
+            endNested = tmpEndNested;
+            startNested = tmpStartNested;
+
+            if (startNested == endNested) isDuplicatedIfDetect = false;
+
+            // 중첩된 '}'문 사이에 다른 statement가 있는지 검사. 있을 경우 detect는 false
+            tmpStartNested = startNested;
+            for (int i=startNested+1; i<=endNested; ++i) {
+                int start = endIfIndexes.get(i-1);
+                int end = endIfIndexes.get(i);
+                boolean flag = true;
+
+                // if문 중간에 비어있나? 비어있으면 flag = true
+                for (int j=start-1; j>end; --j) {
+                    if (!lines.get(j).trim().equals("")) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) break;
+                tmpStartNested++;
+            }
+
+            tmpEndNested = tmpStartNested;
+            for (int i=tmpStartNested; i<endNested; ++i) {
+                int start = endIfIndexes.get(i);
+                int end = endIfIndexes.get(i+1);
+                boolean flag = false;
+                for (int j=start-1; j>end; --j) {
+                    if (!lines.get(j).trim().equals("")) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (flag) break;
+                tmpEndNested++;
+            }
+
+            System.out.println("start:" + tmpStartNested + "~ end:" + tmpEndNested);
+            startNested = tmpStartNested;
+            endNested = tmpEndNested;
+
+            if (startNested == endNested) isDuplicatedIfDetect = false;
 
         }
 //            System.out.println("nNestedIf: " + nNestedIf);
@@ -231,7 +310,7 @@ public class RefactorService {
         String fixedPart = "";
         String fixedCode = "";
 
-        if (nNestedIf == 1) {
+        if (!isDuplicatedIfDetect) {
             newLines = lines;
             buggyPart = "";
             fixedPart = "";
@@ -243,28 +322,28 @@ public class RefactorService {
                 newLines.add(line);
             }
             if (classStartIndex >= 0) newLines.set(classStartIndex, "public class Fixed {");
-            String totalCoditions = conditions.get(0);
-            for (int i=1; i<nNestedIf; ++i) {
+            String totalCoditions = conditions.get(startNested);
+            for (int i=startNested+1; i<=endNested; ++i) {
                 totalCoditions += " && "+ conditions.get(i);
             }
 
             // 합쳐진 if 문 추가
-            String startIfLine = lines.get(startIfIndexes.get(0));
+            String startIfLine = lines.get(startIfIndexes.get(startNested));
             int nSpace = 0;
             while (startIfLine.charAt(nSpace) == ' ') nSpace++;
             String newIfStmt = "";
             for (int i=0; i<nSpace; ++i) newIfStmt += " ";
             newIfStmt += "if (" + totalCoditions + ") {";
-            newLines.set(startIfIndexes.get(0), newIfStmt);
+            newLines.set(startIfIndexes.get(startNested), newIfStmt);
 
             // 중첩된 if() { 제거
-            int start = startIfIndexes.get(0) + 1;
-            int end = startIfIndexes.get(nNestedIf-1);
+            int start = startIfIndexes.get(startNested) + 1;
+            int end = startIfIndexes.get(endNested);
             for (int i=start; i<=end; ++i) newLines.set(i, "");
 
             // 중첩된 } 제거
-            start = endIfIndexes.get(nNestedIf-1);
-            end = endIfIndexes.get(0) - 1;
+            start = endIfIndexes.get(endNested);
+            end = endIfIndexes.get(startNested) - 1;
             for (int i=start; i<=end; ++i) newLines.set(i, "");
         }
 
@@ -275,7 +354,7 @@ public class RefactorService {
 
 
         for (int i=0; i<lines.size(); ++i) {
-            if (i >= startIfIndexes.get(0) && i <=endIfIndexes.get(0)) {
+            if (i >= startIfIndexes.get(startNested) && i <=endIfIndexes.get(startNested)) {
                 buggyPart += (i+1) + ": " + lines.get(i) + "\n";
                 fixedPart += (i+1) + ": " + newLines.get(i) + "\n";
             }
