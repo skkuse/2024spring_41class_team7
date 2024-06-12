@@ -59,3 +59,17 @@ def get_one_buggy_code(buggy_code_id: int, db: Session = Depends(database.get_db
             onSuccess=None,
             onError=exception_body)
 
+@router.get("/date/{date}")
+def get_buggy_codes(date: str, db: Session = Depends(database.get_db)):
+    buggyCodesService = BuggyCodesService(db)
+    findBuggyCodes = buggyCodesService.find_all_by_date(date)
+
+    return Response(
+        status=SUCCESS,
+        onSuccess=ListBody(
+            nItems=len(findBuggyCodes),
+            items=map(lambda buggyCoodes: BuggyCodeResponse.create(buggyCoodes), findBuggyCodes)
+        ),
+        onError=None
+    )
+

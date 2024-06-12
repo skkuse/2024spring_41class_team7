@@ -24,6 +24,7 @@ def mock_buggy_code_json_1():
     return {
     "buggy_code_id": 1,
     "code_text": "code_text",
+    "fixed_code_text": "fixed_code_text",
     "create_at": "2020-01-01",
     "emission_amount": 1.0,
     "core_type": "core_type",
@@ -37,6 +38,7 @@ def mock_buggy_code_1():
     return BuggyCode(
         buggy_code_id=1,
         code_text="code_text",
+        fixed_code_text="fixed_code_text",
         created_at=datetime(2020, 1, 1),
         emission_amount=1.0,
         core_type="core_type", core_model="core_model", core_num=1, memory=1)
@@ -46,6 +48,7 @@ def mock_buggy_code_json_2():
     return {
     "buggy_code_id": 2,
     "code_text": "code_text",
+    "fixed_code_text": "fixed_code_text",
     "create_at": "2020-01-01",
     "emission_amount": 1.0,
     "core_type": "core_type",
@@ -58,6 +61,7 @@ def  mock_buggy_code_2():
     return BuggyCode(
         buggy_code_id=2,
         code_text="code_text",
+        fixed_code_text="fixed_code_text",
         created_at=datetime(2020, 1, 1),
         emission_amount=1.0,
         core_type="core_type", core_model="core_model", core_num=1, memory=1)
@@ -67,6 +71,7 @@ def mock_buggy_code_json_3():
     return {
         "buggy_code_id": 3,
         "code_text": "code_text",
+        "fixed_code_text": "fixed_code_text",
         "create_at": "2020-01-01",
         "emission_amount": 1.0,
         "core_type": "core_type",
@@ -80,6 +85,7 @@ def mock_buggy_code_3():
     return BuggyCode(
         buggy_code_id=3,
         code_text="code_text",
+        fixed_code_text="fixed_code_text",
         created_at=datetime(2020, 1, 1),
         emission_amount=1.0,
         core_type="core_type", core_model="core_model", core_num=1, memory=1)

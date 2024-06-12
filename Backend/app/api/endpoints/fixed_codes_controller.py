@@ -25,7 +25,7 @@ def create_fixed_code(fixed_code: FixedCodeRequest, db: Session = Depends(databa
 def get_fixed_codes(db: Session = Depends(database.get_db)):
     fixedCodeService = FixedCodeService(db)
     fixed_codes = fixedCodeService.find_all()
-    return Response(status="succ`ess",
+    return Response(status="success",
                     onSuccess=ListBody(
                         nItems=len(fixed_codes),
                         items=map(lambda fixed_code: FixedCodeResponse.create(fixed_code), fixed_codes)),
@@ -80,3 +80,23 @@ def delete_fixed_code(fixed_code_id: int, db: Session = Depends(database.get_db)
         return Response(status="fail",
                         onSuccess=None,
                         onError=exception_body)
+
+@router.get("/ranking/{strategy_id}/{nRank}")
+def get_one_fixed_code_by_strategy(strategy_id: int, nRank: int, db: Session = Depends(database.get_db)):
+    fixedCodeService = FixedCodeService(db)
+    findFixedCodes = fixedCodeService.rank_with_strategy(strategy_id, nRank)
+    return Response(status="success",
+                    onSuccess=ListBody(
+                        nItems=len(findFixedCodes),
+                        items=map(lambda fixed_code: FixedCodeResponse.create(fixed_code), findFixedCodes)),
+                    onError=None)
+
+@router.get("/date/{date}")
+def get_all_fixed_codes_by_date(date: str, db: Session = Depends(database.get_db)):
+    fixedCodeService = FixedCodeService(db)
+    findFixedCodes = fixedCodeService.find_all_by_date(date)
+    return Response(status="success",
+                    onSuccess=ListBody(
+                        nItems=len(findFixedCodes),
+                        items=map(lambda fixed_code: FixedCodeResponse.create(fixed_code), findFixedCodes)),
+                    onError=None)

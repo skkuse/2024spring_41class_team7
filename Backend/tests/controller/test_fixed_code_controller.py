@@ -13,6 +13,7 @@ client = TestClient(app)
 def mock_fixed_code_json_1():
     return {
         "fixed_code_id": 1,
+        "fixed_code_text": "fixed_code_text",
         "buggy_part": "buggy part",
         "fixed_part": "fixed part",
         "reduced_amount": 0.0,
@@ -25,6 +26,7 @@ def mock_fixed_code_json_1():
 def mock_fixed_code_1():
     return FixedCode(
         fixed_code_id=1,
+        fixed_code_text="fixed_code_text",
         buggy_part="buggy part",
         fixed_part="fixed part",
         reduced_amount=0.0,
@@ -37,6 +39,7 @@ def mock_fixed_code_1():
 def mock_fixed_code_json_2():
     return {
         "fixed_code_id": 2,
+        "fixed_code_text": "fixed_code_text",
         "buggy_part": "buggy part",
         "fixed_part": "fixed part",
         "reduced_amount": 0.0,
@@ -49,6 +52,7 @@ def mock_fixed_code_json_2():
 def mock_fixed_code_2():
     return FixedCode(
         fixed_code_id=2,
+        fixed_code_text="fixed_code_text",
         buggy_part="buggy part",
         fixed_part="fixed part",
         reduced_amount=0.0,
@@ -61,6 +65,7 @@ def mock_fixed_code_2():
 def mock_fixed_code_json_3():
     return {
         "fixed_code_id": 3,
+        "fixed_code_text": "fixed_code_text",
         "buggy_part": "buggy part",
         "fixed_part": "fixed part",
         "reduced_amount": 0.0,
@@ -73,6 +78,7 @@ def mock_fixed_code_json_3():
 def mock_fixed_code_3():
     return FixedCode(
         fixed_code_id=3,
+        fixed_code_text="fixed_code_text",
         buggy_part="buggy part",
         fixed_part="fixed part",
         reduced_amount=0.0,

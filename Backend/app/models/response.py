@@ -21,6 +21,7 @@ class ListBody(BaseModel):
 class BuggyCodeResponse(BaseModel):
     buggy_code_id: int
     code_text: str
+    fixed_code_text: str
     create_at: datetime
     emission_amount: float
     core_type: str
@@ -35,6 +36,7 @@ class BuggyCodeResponse(BaseModel):
         return BuggyCodeResponse(
             buggy_code_id=buggyCode.buggy_code_id,
             code_text=buggyCode.code_text,
+            fixed_code_text=buggyCode.fixed_code_text,
             create_at=buggyCode.created_at.strftime("%Y-%m-%d"),
             emission_amount=buggyCode.emission_amount,
             core_type=buggyCode.core_type,
@@ -45,6 +47,7 @@ class BuggyCodeResponse(BaseModel):
 
 class FixedCodeResponse(BaseModel):
     fixed_code_id: int
+    fixed_code_text: str
     buggy_part: str
     fixed_part: str
     reduced_amount: float
@@ -59,6 +62,7 @@ class FixedCodeResponse(BaseModel):
     def create(fixedCode: FixedCode):
         return FixedCodeResponse(
             fixed_code_id=fixedCode.fixed_code_id,
+            fixed_code_text=fixedCode.fixed_code_text,
             buggy_part=fixedCode.buggy_part,
             fixed_part=fixedCode.fixed_part,
             reduced_amount=fixedCode.reduced_amount,
