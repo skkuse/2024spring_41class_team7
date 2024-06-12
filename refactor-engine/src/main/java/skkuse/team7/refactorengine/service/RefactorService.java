@@ -117,6 +117,7 @@ public class RefactorService {
         String[] codes = inputCode.split("\n");
         ArrayList<String> lines = new ArrayList<>(Arrays.asList(codes));
         int classStartIndex = -1;
+        System.out.println("!");
 
         //====== my code =======//
         List<Integer> startIfIndexes = new ArrayList<>();
@@ -142,6 +143,7 @@ public class RefactorService {
 
             if(lines.get(idx).contains("public class Buggy")) {
                 classStartIndex = idx;
+                idx++;
                 continue;
             }
 
@@ -292,6 +294,7 @@ public class RefactorService {
 
             if (startNested == endNested) isDuplicatedIfDetect = false;
 
+
         }
 //            System.out.println("nNestedIf: " + nNestedIf);
 //
@@ -302,6 +305,8 @@ public class RefactorService {
 //            conditions.forEach(i -> System.out.print(i + " "));
 //            System.out.println();
         // 여기까지 하면 detect 완료
+
+        System.out.println(startNested + " ~ " + endNested);
 
         idx = 0;
         ArrayList<String> newLines = new ArrayList<>();
