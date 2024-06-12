@@ -12,6 +12,7 @@ class BuggyCode(Base):
     __tablename__ = 'buggy_code'
     buggy_code_id = Column(Integer, primary_key=True, autoincrement=True)
     code_text = Column(Text, nullable=False)
+    fixed_code_text = Column(Text, nullable=False)
     created_at = Column(DateTime, nullable=False)
     emission_amount = Column(Float, nullable=False)
     core_type = Column(String(10), nullable=False)
@@ -24,6 +25,7 @@ class BuggyCode(Base):
     def create(buggy_code_req: BuggyCodeRequest):
         return BuggyCode(
             code_text=buggy_code_req.code_text,
+            fixed_code_text=buggy_code_req.fixed_code_text,
             created_at=datetime.datetime.now(),
             emission_amount=buggy_code_req.emission_amount,
             core_type=buggy_code_req.core_type,
@@ -35,6 +37,7 @@ class BuggyCode(Base):
 class FixedCode(Base):
     __tablename__ = 'fixed_code'
     fixed_code_id = Column(Integer, primary_key=True, autoincrement=True)
+    fixed_code_text = Column(Text, nullable=False)
     buggy_part = Column(Text, nullable=False)
     fixed_part = Column(Text, nullable=False)
     reduced_amount = Column(Float)
@@ -48,6 +51,7 @@ class FixedCode(Base):
     @staticmethod
     def create(fixed_code_req: FixedCodeRequest):
         return FixedCode(
+            fixed_code_text=fixed_code_req.fixed_code_text,
             buggy_part=fixed_code_req.buggy_part,
             fixed_part=fixed_code_req.fixed_part,
             reduced_amount=fixed_code_req.reduced_amount,

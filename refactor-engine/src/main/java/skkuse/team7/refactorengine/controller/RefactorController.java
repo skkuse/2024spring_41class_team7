@@ -1,5 +1,7 @@
 package skkuse.team7.refactorengine.controller;
 
+import static java.util.Collections.emptyList;
+
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -29,14 +31,48 @@ public class RefactorController {
     public ResponseEntity<CodePartResponse> partialRefactor
             (@RequestBody String request, @PathVariable Long refactorId) {
         RefactoringResult refactoringResult;
-        if (refactorId == 1) refactoringResult = refactorService.removeDuplicateGetSize(request, "");
-        else if (refactorId == 2) refactoringResult = refactorService.removeDuplicatedIf(request);
-        else if (refactorId == 3) refactoringResult = refactorService.removeDuplicateObjectCreation(request);
+        int nRefactoring = 0;
+        List<String> buggyParts = new ArrayList<>();
+        List<String> fixedParts = new ArrayList<>();
+        if (refactorId == 1) {
+            Integer sig = 1;
+            refactoringResult = refactorService.removeDuplicateGetSize(request, (sig++).toString());
+            while (!refactoringResult.buggyPart().equals("")) {
+                buggyParts.add(refactoringResult.buggyPart());
+                fixedParts.add(refactoringResult.fixedPart());
+                nRefactoring++;
+
+                request = refactoringResult.fixedCode();
+                refactoringResult = refactorService.removeDuplicateGetSize(request, (sig++).toString());
+            }
+        }
+        else if (refactorId == 2) {
+            refactoringResult = refactorService.removeDuplicatedIf(request);
+            while (!refactoringResult.buggyPart().equals("")) {
+                buggyParts.add(refactoringResult.buggyPart());
+                fixedParts.add(refactoringResult.fixedPart());
+                nRefactoring++;
+
+                request = refactoringResult.fixedCode();
+                refactoringResult = refactorService.removeDuplicatedIf(request);
+            }
+        }
+        else if (refactorId == 3) {
+            refactoringResult = refactorService.removeDuplicateObjectCreation(request);
+            while (!refactoringResult.buggyPart().equals("")) {
+                buggyParts.add(refactoringResult.buggyPart());
+                fixedParts.add(refactoringResult.fixedPart());
+                nRefactoring++;
+
+                request = refactoringResult.fixedCode();
+                refactoringResult = refactorService.removeDuplicateObjectCreation(request);
+            }
+        }
         else {
             refactoringResult = new RefactoringResult("", "", "", "");
-            return new ResponseEntity<>(CodePartResponse.of(-1L, refactoringResult), HttpStatus.OK);
+            return new ResponseEntity<>(CodePartResponse.of(-1L, refactoringResult, -1, emptyList(), emptyList()), HttpStatus.OK);
         }
-        return new ResponseEntity<CodePartResponse>(CodePartResponse.of(refactorId, refactoringResult),HttpStatus.OK);
+        return new ResponseEntity<CodePartResponse>(CodePartResponse.of(refactorId, refactoringResult, nRefactoring, buggyParts, fixedParts),HttpStatus.OK);
     }
 
     @PostMapping("/refactoring/all")

@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 class FixedCodeRequest(BaseModel):
+    fixed_code_text: str
     buggy_part: str
     fixed_part: str
     reduced_amount: float
@@ -11,6 +12,7 @@ class FixedCodeRequest(BaseModel):
 
 class BuggyCodeRequest(BaseModel):
     code_text: str
+    fixed_code_text: str
     emission_amount: float
     core_type: str
     core_model: str
