@@ -1,44 +1,27 @@
 import java.util.ArrayList;
-import java.util.Random;
-
 public class Buggy {
     public static void main(String[] args) {
-        ArrayList<Integer> arr = new ArrayList<>();
+        int[][] matrix = new int[10][10];
 
-        Random r = new Random();
-        for(int i=0; i<1000000; i++) {
-            int num = r.nextInt(10);
-            arr.add(num);
-        }
-
-        boolean cond1 = checkCond1(arr.get(1));
-        boolean cond2 = checkCond2(arr.get(2));
-        boolean cond3 = checkCond3(arr.get(3));
-
-        int arrSize1 = arr.size();
-        for(int i=0; i<arrSize1; i++) {
-            System.out.println(arr.get(i));
-            if (cond1 && cond2 && cond3) {
-
-
-                        System.out.println("Hello");
-
-
+        // 행렬을 초기화
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                matrix[i][j] = i + j;
             }
         }
 
-       
-    }
+        int sum = 0;
+        // 비효율적인 중첩 반복문: 불필요한 조건 체크와 연산 수행
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                for (int k = 0; k < 10; k++) {
+                    if (i < 10 && j < 10) {
+                        sum += matrix[i][j];
+                    }
+                }
+            }
+        }
 
-    public static boolean checkCond1(Integer x) {
-        return x < 9;
-    }
-
-    public static boolean checkCond2(Integer x) {
-        return x < 5;
-    }
-
-    public static boolean checkCond3(Integer x) {
-        return x < 3;
+        System.out.println("Sum: " + sum);
     }
 }

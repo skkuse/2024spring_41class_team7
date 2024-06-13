@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import Plotly from 'plotly.js-dist';
 import Header from '../components/Header';
-import { Link } from 'react-router-dom';
-
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 const Wrapper = styled.div`
   display: flex;
@@ -199,65 +197,152 @@ const BoxHeader = styled.div`
 `;
 
 function ResultPage() {
+  const location = useLocation();
+  const { codeId, fixedText } = location.state || {};
+
+  const [userCode, setUserCode] = useState('');
+  const [originEmission, setOriginEmission] = useState(null);
+  const [afterEmission, setAfterEmission] = useState(null);
+  const [percentageEmission, setPercentageEmission] = useState(null);
+  const [originEmissionRaw, setOriginEmissionRaw] = useState(null);
+  const [afterEmissionRaw, setAfterEmissionRaw] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (codeId) {
+        try {
+          const response = await fetch(`/api/buggyCodes/${codeId}`);
+          const data = await response.json();
+
+          if (data.status === 'success') {
+            const { code_text: codeText, core_type: coreType, core_num: coreNum, memory: memory } = data.onSuccess;
+            setUserCode(codeText);
+            console.log(coreType, coreNum, memory);
+
+            const calculateEmission = async (code) => {
+              const postData = {
+                java_code: code,
+                cpu: coreType,
+                cores: coreNum,
+                memory: memory,
+                visibility: 'public',
+              };
+
+              try {
+                const response = await fetch('/api/calculate/carbon-emission/', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(postData),
+                });
+
+                if (!response.ok) {
+                  throw new Error('Network response was not ok');
+                }
+
+                const responseData = await response.json();
+                return responseData.carbon_emission;
+              } catch (error) {
+                console.error('Error calculating carbon emission:', error);
+                setError(error.message);
+                return null;
+              }
+            };
+
+            const userEmission = await calculateEmission(codeText);
+            if (userEmission !== null) {
+              const userEmissionRounded = userEmission.toFixed(4) + 'g';
+              setOriginEmission(userEmissionRounded);
+              setOriginEmissionRaw(userEmission);
+            }
+
+            if (fixedText) {
+              const buggyText = fixedText.replace(/Fixed/g, 'Buggy');
+              const greenEmission = await calculateEmission(buggyText);
+              if (greenEmission !== null) {
+                const greenEmissionRounded = greenEmission.toFixed(4) + 'g';
+                setAfterEmission(greenEmissionRounded);
+                setAfterEmissionRaw(greenEmission);
+
+                if (userEmission !== null && greenEmission !== null) {
+                  const improvementPercentage = ((userEmission - greenEmission) / userEmission) * 100;
+                  setPercentageEmission(improvementPercentage.toFixed(2) + '%');
+                }
+              }
+            }
+          } else {
+            throw new Error(data.onError.message || 'Error fetching code data');
+          }
+        } catch (error) {
+          console.error('Fetch error:', error);
+          setError(error.message);
+        }
+      }
+    };
+
+    fetchData();
+  }, [codeId, fixedText]);
+
+  const savedCarbonEmission = originEmissionRaw && afterEmissionRaw ? (originEmissionRaw - afterEmissionRaw) : null;
+
 
   return (
     <Wrapper>
-      <Container>
-        <Header />
-        <FirstBox>
-          <FirstBoxLeft to="/">Green Coders</FirstBoxLeft>
-        </FirstBox>
-        <Box>
-          <InnerBoxLeft>
-            <InnerBoxLeftHeader>Carbon footprint</InnerBoxLeftHeader>
-            <InnerBoxLeftContents>
-              <CarbonPrintBox1>
-                <img src="./img/flash.png" alt="Earth" id="flash"></img>
-                <ValueBox><Value>2.28 kWh</Value><Explain>Energy needed</Explain></ValueBox>
-              </CarbonPrintBox1>
-              <CarbonPrintBox1>
-                <img src="./img/CO2.png" alt="Earth" id="co2"></img>
-                <ValueBox><Value>948.13g CO2e</Value><Explain>Carbon footprint</Explain></ValueBox>
-              </CarbonPrintBox1>
-            </InnerBoxLeftContents>
-            <InnerBoxLeftContents>
-              <CarbonPrintBox2>
-                <img src="./img/tree.png" alt="Earth" id="tree"></img>
-                <ValueBox><Value>1.03 tree-months</Value><Explain>Carbon sequestration</Explain></ValueBox>
-              </CarbonPrintBox2>
-              <CarbonPrintBox2>
-                <img src="./img/car.png" alt="Earth" id="car"></img>
-                <ValueBox><Value>1.45 km</Value><Explain>In a passenger car</Explain></ValueBox>
-              </CarbonPrintBox2>
-              <CarbonPrintBox2>
-                <img src="./img/aircraft.png" alt="Earth" id="aircraft"></img>
-                <ValueBox><Value>2%</Value><Explain>Of a flight Paris-London</Explain></ValueBox>
-              </CarbonPrintBox2>
-            </InnerBoxLeftContents>
-          </InnerBoxLeft>
-          <InnerBoxRight>
-            <InnerBoxRightHeader>
-              분석 결과
-            </InnerBoxRightHeader>
-            <InnerBoxRightContents>
-              <InnerBoxRightSubContents>기존 코드 탄소 발생</InnerBoxRightSubContents>
-              <InnerBoxRightSubContents>1398</InnerBoxRightSubContents>
-            </InnerBoxRightContents>
-            <InnerBoxRightContents>
-              <InnerBoxRightSubContents>수정된 코드 탄소 발생</InnerBoxRightSubContents>
-              <InnerBoxRightSubContents>600</InnerBoxRightSubContents>
-            </InnerBoxRightContents>
-            <InnerBoxRightContents>
-              <InnerBoxRightSubContents>에너지 소비 개선</InnerBoxRightSubContents>
-              <InnerBoxRightSubContents>13.98%</InnerBoxRightSubContents>
-            </InnerBoxRightContents>
-          </InnerBoxRight>
-        </Box>
-        <LastBox>
-          <BoxHeader>Code analysis</BoxHeader>
-        </LastBox>
-      </Container>
-    </Wrapper>
+    <Container>
+      <Header />
+      <FirstBox>
+        <FirstBoxLeft to="/">Green Coders</FirstBoxLeft>
+      </FirstBox>
+      <Box>
+        <InnerBoxLeft>
+          <InnerBoxLeftHeader>Carbon footprint</InnerBoxLeftHeader>
+          <InnerBoxLeftContents>
+            <CarbonPrintBox1>
+              <img src="./img/flash.png" alt="Earth" id="flash"></img>
+              <ValueBox><Value>{savedCarbonEmission ? (savedCarbonEmission * 1000 / 3600).toFixed(4) + ' Wh' : '-'}</Value><Explain>Energy needed</Explain></ValueBox>
+            </CarbonPrintBox1>
+            <CarbonPrintBox1>
+              <img src="./img/CO2.png" alt="Earth" id="CO2"></img>
+              <ValueBox><Value>{savedCarbonEmission ? savedCarbonEmission.toFixed(4) + 'g CO2e' : '-'}</Value><Explain>Carbon footprint</Explain></ValueBox>
+            </CarbonPrintBox1>
+          </InnerBoxLeftContents>
+          <InnerBoxLeftContents>
+            <CarbonPrintBox2>
+              <img src="./img/tree.png" alt="Earth" id="tree"></img>
+              <ValueBox><Value>{savedCarbonEmission ? (savedCarbonEmission / 22).toFixed(4) + ' tree-months' : '-'}</Value><Explain>Carbon sequestration</Explain></ValueBox>
+            </CarbonPrintBox2>
+            <CarbonPrintBox2>
+              <img src="./img/car.png" alt="Earth" id="car"></img>
+              <ValueBox><Value>{savedCarbonEmission ? (savedCarbonEmission * 1000 / 192).toFixed(4) + ' m' : '-'}</Value><Explain>In a passenger car</Explain></ValueBox>
+            </CarbonPrintBox2>
+            <CarbonPrintBox2>
+              <img src="./img/aircraft.png" alt="Earth" id="aircraft"></img>
+              <ValueBox><Value>{savedCarbonEmission ? (savedCarbonEmission / 1000).toFixed(6) + '%' : '-'}</Value><Explain>Of a flight Paris-London</Explain></ValueBox>
+            </CarbonPrintBox2>
+          </InnerBoxLeftContents>
+        </InnerBoxLeft>
+        <InnerBoxRight>
+          <InnerBoxRightHeader>
+            분석 결과
+          </InnerBoxRightHeader>
+          <InnerBoxRightContents>
+            <InnerBoxRightSubContents>기존 코드 탄소 발생</InnerBoxRightSubContents>
+            <InnerBoxRightSubContents>{originEmission}</InnerBoxRightSubContents>
+          </InnerBoxRightContents>
+          <InnerBoxRightContents>
+            <InnerBoxRightSubContents>수정된 코드 탄소 발생</InnerBoxRightSubContents>
+            <InnerBoxRightSubContents>{afterEmission}</InnerBoxRightSubContents>
+          </InnerBoxRightContents>
+          <InnerBoxRightContents>
+            <InnerBoxRightSubContents>에너지 소비 개선</InnerBoxRightSubContents>
+            <InnerBoxRightSubContents>{percentageEmission}</InnerBoxRightSubContents>
+          </InnerBoxRightContents>
+        </InnerBoxRight>
+      </Box>
+    </Container>
+  </Wrapper>
   )
 }
 

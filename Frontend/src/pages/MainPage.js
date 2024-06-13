@@ -104,6 +104,7 @@ const InnerBoxLeftContents = styled.div`
   justify-content: space-between;
   padding: 10px;
   box-sizing: border-box;
+  margin-top : 150px;
 `;
 
 const SpaceImage = styled.img`
@@ -229,7 +230,7 @@ const Before = styled.div`
   margin-top: 20px;
   margin: 10px 10px 10px 20px;
   padding: 10px;
-  height: 400px;
+  height: 300px;
   overflow: auto;
 `;
 
@@ -240,7 +241,7 @@ const After = styled.div`
   margin-top: 20px;
   margin: 10px 20px 10px 10px;
   padding: 10px;
-  height: 400px;
+  height: 300px;
   overflow: auto;
 `;
 
@@ -251,6 +252,9 @@ const Title = styled.div`
 const CodeConternts = styled.div`
   font-size: 15px;
   text-align: left;
+  display: flex;
+  align-items: center; // 수직 가운데 정렬
+  height: 60%; // 부모 요소의 전체 높이를 차지하도록 설정
 `;
 
 const ModalContent = styled.div`
@@ -320,55 +324,249 @@ const TextArea = styled.textarea`
   margin-bottom: 20px;
 `;
 
+const SelectWrapper = styled.div`
+  position: relative;
+  width: 110px;
+`;
+
+const Select = styled.select`
+  width: 100%;
+  height: 40px;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23525252" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-color: #f8f8f8;
+`;
+
 function MainPage() {
   const graph1Ref = useRef(null);
   const graph2Ref = useRef(null);
   const innerBoxRightRef = useRef(null);
   const [beforeCode, setBeforeCode] = useState('Before Code');
   const [afterCode, setAfterCode] = useState('After Code');
+  const [fixed, setFixed] = useState(1);
+  const [visitor, setVisitor] = useState(1398);
+  const [ratio, setRatio] = useState('3%');
+  const [amount, setAmount] = useState('0.03g');
+  const imageContainerRef = useRef(null);
+  const earthImageRef = useRef(null);
+  const marsImageRef = useRef(null);
+  const spaceImageRef = useRef(null);
+  const [reducedAmount, setReducedAmount] = useState(0);
+  const [reportDescription, setReportDescription] = useState(''); // 신고 내용
+  const [selectedType, setSelectedType] = useState(1);
   const navigate = useNavigate();
   const handleCodeConversion = () => {
     navigate('/calculator');
   };
 
-  const resizeGraphs = () => {
+  // Graph1 데이터 가져오는 함수
+  const fetchFixedCodesData = async () => {
+    const response = await fetch('/api/fixedCodes');
+    const data = await response.json();
+
+    // 데이터 구조 확인을 위해 출력
+    console.log("Fixed Codes Data:", data);
+
+    // 데이터 구조에 맞게 카운트를 세는 로직
+    const counts = { 1: 0, 2: 0, 3: 0 };
+
+    // assuming data.onSuccess.items is an array
+    data.onSuccess.items.forEach(item => {
+      if (counts[item.fix_strategy_id] !== undefined) {
+        counts[item.fix_strategy_id]++;
+      }
+    });
+
+    return counts;
+  };
+
+  const getDates = (days) => {
+    const dates = [];
+    const today = new Date();
+    for (let i = 0; i < days; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      dates.unshift(date.toISOString().split('T')[0]); // 최신 날짜가 먼저 오도록 배열의 앞에 추가
+    }
+    return dates;
+  };
+
+  const fetchDataForDates = async (dates) => {
+    const promises = dates.map(date =>
+      fetch(`/api/buggyCodes/date/${date}`)
+        .then(res => res.json())
+        .then(data => ({ ...data, date })) // 날짜를 데이터에 포함
+    );
+    return Promise.all(promises);
+  };
+
+  // 날짜 생성 함수 (오늘 날짜를 반환)
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
+  // 오늘 날짜의 방문자 수 가져오는 함수
+  const fetchTodayVisitorCount = async () => {
+    const today = getTodayDate();
+    const response = await fetch(`/api/buggyCodes/date/${today}`);
+    const data = await response.json();
+    return data.onSuccess.nItems;
+  };
+
+  const drawGraphs = (fixedCodesData, datesData) => {
     if (innerBoxRightRef.current) {
       const containerWidth = innerBoxRightRef.current.clientWidth / 2 - 10;
 
       const layout = {
         autosize: true,
         width: containerWidth,
-        height: containerWidth,
+        height: containerWidth + 60,
         margin: {
-          l: 20,
-          r: 20,
-          b: 20,
-          t: 30,
+          l: 30,
+          r: 30,
+          b: 60,
+          t: 100,
           pad: 0
         },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
       };
 
-      Plotly.newPlot(graph1Ref.current, [{
-        x: ['A', 'B', 'C'],
-        y: [10, 15, 13],
-        type: 'bar'
-      }], layout);
+      // 색상 설정
+      const strategy1Color = '#4682B4'; // SteelBlue
+      const strategy2Color = '#FF6347'; // Tomato
+      const strategy3Color = '#3CB371'; // MediumSeaGreen
 
-      Plotly.newPlot(graph2Ref.current, [{
-        x: ['X', 'Y', 'Z'],
-        y: [5, 10, 8],
-        type: 'line'
-      }], layout);
+      const donutData = [{
+        labels: ['전략 1', '전략 2', '전략 3'],
+        values: [fixedCodesData[1], fixedCodesData[2], fixedCodesData[3]],
+        type: 'pie',
+        hole: 0.4, // 이 값은 도넛의 중앙 구멍 크기를 설정합니다. 0.4는 40%를 의미합니다.
+        marker: {
+          colors: [strategy1Color, strategy2Color, strategy3Color]
+        }
+      }];
+
+      const lineData = [{
+        x: datesData.map(item => item.date),
+        y: datesData.map(item => item.onSuccess.nItems),
+        type: 'scatter',
+        mode: 'lines+markers',
+        marker: {
+          color: strategy1Color // 선 그래프와 1번 유형 색상 동일하게 설정
+        },
+        line: {
+          color: strategy1Color // 선 그래프와 1번 유형 색상 동일하게 설정
+        }
+      }];
+
+      Plotly.newPlot(graph1Ref.current, donutData, { ...layout, title: '패턴 유형 횟수' });
+      Plotly.newPlot(graph2Ref.current, lineData, { ...layout, title: '일일 이용자' });
     }
   };
 
   useEffect(() => {
-    resizeGraphs();
-    window.addEventListener('resize', resizeGraphs);
-    return () => window.removeEventListener('resize', resizeGraphs);
+    // 각 fetch 요청을 Promise.all로 처리하여 모든 요청이 완료될 때까지 기다림
+    Promise.all([
+      fetch(`/api/fixedCodes/ranking/1/1`).then(response => response.json()),
+      fetch(`/api/fixedCodes/ranking/2/1`).then(response => response.json()),
+      fetch(`/api/fixedCodes/ranking/3/1`).then(response => response.json())
+    ])
+    .then(responses => {
+      // 모든 fetch 요청의 응답을 받았을 때 실행되는 부분
+      let max = -Infinity;
+      responses.forEach(data => {
+        const reduced_rate = data.onSuccess.items[0].reduced_rate;
+        const formattedReducedRate = (reduced_rate).toFixed(2);
+        if (parseFloat(formattedReducedRate) > max) {
+          max = parseFloat(formattedReducedRate);
+        }
+      });
+      const formattedMax = max.toString() + '%';
+      setRatio(formattedMax);
+      console.log(formattedMax);
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+  }, []); // 빈 배열을 전달하여 useEffect가 한 번만 실행되도록 설정
+
+  useEffect(() => {
+    fetch(`/api/fixedCodes/ranking/${selectedType}/1`)
+      .then(response => response.json()) // 응답을 JSON 형태로 파싱
+      .then(data => {
+        const { buggy_part, fixed_part, fixed_code_id } = data.onSuccess.items[0];
+        console.log(buggy_part, fixed_part);
+        setBeforeCode(<pre>{buggy_part}</pre>);
+        setAfterCode(<pre>{fixed_part}</pre>);
+        setFixed(fixed_code_id);
+
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error); // 에러가 발생하면 콘솔에 출력
+      });
+  }, [selectedType]);
+
+  useEffect(() => {
+    const dates = getDates(5);
+
+    Promise.all([fetchFixedCodesData(), fetchDataForDates(dates)])
+      .then(([fixedCodesData, datesData]) => {
+        drawGraphs(fixedCodesData, datesData);
+      })
+      .catch(err => console.error('Error fetching data:', err));
+
+
+      fetch('/api/fixedCodes')
+      .then(response => response.json()) // 응답을 JSON 형태로 파싱
+      .then(data => {
+        // 모든 아이템의 reduced_amount를 합산
+        const totalReducedAmount = data.onSuccess.items
+          .reduce((sum, item) => sum + item.reduced_amount, 0);
+
+        // 합산한 값을 소수점 둘째 자리까지 자르고 뒤에 g를 붙임
+        const formattedTotalReducedAmount = totalReducedAmount.toFixed(4) + 'g';
+
+        // setAmount로 설정
+        setAmount(formattedTotalReducedAmount);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error); // 에러가 발생하면 콘솔에 출력
+      });
+
+    fetchTodayVisitorCount()
+      .then(visitorCount => setVisitor(visitorCount))
+      .catch(err => console.error('Error fetching visitor count:', err));
+
   }, []);
+
+  useEffect(() => {
+    // API 호출로 reduced_amount 가져오기
+    fetch('/api/fixedCodes')
+      .then(response => response.json())
+      .then(data => {
+        const totalReducedAmount = data.onSuccess.items.reduce((sum, item) => sum + item.reduced_amount, 0);
+        setReducedAmount(totalReducedAmount);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
+  useEffect(() => {
+    if (imageContainerRef.current && earthImageRef.current && marsImageRef.current && spaceImageRef.current) {
+      const maxDistance = imageContainerRef.current.clientWidth - earthImageRef.current.clientWidth - marsImageRef.current.clientWidth;
+      const marginLeft = 50 + (reducedAmount / 100 * maxDistance);
+      spaceImageRef.current.style.marginLeft = `${marginLeft + 100}px`; // 실제 서비스에서는 적절한 값 사용 필요 현재는 시각적 효과로 조금 더 더함
+    }
+  }, [reducedAmount]);
+
+
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -378,6 +576,33 @@ function MainPage() {
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const reportSubmit = () => {
+    // 서버로 데이터를 보내는 부분
+    const reportData = {
+      description: reportDescription,
+      fixed_code_id: fixed // selectedType을 사용하여 신고하는 코드의 ID를 설정
+    };
+
+    console.log(reportData);
+    fetch('/api/reports', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(reportData)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      // 신고가 성공적으로 제출되면 모달을 닫습니다.
+      closeModal();
+    })
+    .catch(error => {
+      console.error('Error submitting report:', error);
+    });
   };
 
   return (
@@ -393,10 +618,10 @@ function MainPage() {
         <Box>
           <InnerBoxLeft>
             <InnerBoxLeftHeader>Earth - Mars with green algorithm</InnerBoxLeftHeader>
-            <InnerBoxLeftContents>
-              <img src="./img/earth.png" alt="Earth" id="earth"></img>
-              <SpaceImage src="./img/space.png" alt="Space" id="space" />
-              <img src="./img/mars.png" alt="Mars" id="mars"></img>
+            <InnerBoxLeftContents ref={imageContainerRef}>
+              <img src="./img/earth.png" alt="Earth" id="earth" ref={earthImageRef}></img>
+              <SpaceImage src="./img/space.png" alt="Space" id="space" ref={spaceImageRef}/>
+              <img src="./img/mars.png" alt="Mars" id="mars" ref={marsImageRef}></img>
             </InnerBoxLeftContents>
           </InnerBoxLeft>
           <InnerBoxRight ref={innerBoxRightRef}>
@@ -404,16 +629,16 @@ function MainPage() {
               일간 통계
             </InnerBoxRightHeader>
             <InnerBoxRightContents>
-              <InnerBoxRightSubContents>일일 방문자</InnerBoxRightSubContents>
-              <InnerBoxRightSubContents>1398</InnerBoxRightSubContents>
+              <InnerBoxRightSubContents style={{ fontWeight: 'bold' }}>일일 방문자</InnerBoxRightSubContents>
+              <InnerBoxRightSubContents>{visitor}</InnerBoxRightSubContents>
             </InnerBoxRightContents>
             <InnerBoxRightContents>
-              <InnerBoxRightSubContents>가장 많이 절약된 비율</InnerBoxRightSubContents>
-              <InnerBoxRightSubContents>13.98%</InnerBoxRightSubContents>
+              <InnerBoxRightSubContents style={{ fontWeight: 'bold' }}>절약된 탄소</InnerBoxRightSubContents>
+              <InnerBoxRightSubContents>{amount}</InnerBoxRightSubContents>
             </InnerBoxRightContents>
             <InnerBoxRightContents>
-              <InnerBoxRightSubContents>일일 방문자</InnerBoxRightSubContents>
-              <InnerBoxRightSubContents>1398</InnerBoxRightSubContents>
+              <InnerBoxRightSubContents style={{ fontWeight: 'bold' }}>가장 많이 절약된 비율</InnerBoxRightSubContents>
+              <InnerBoxRightSubContents>{ratio}</InnerBoxRightSubContents>
             </InnerBoxRightContents>
             <GraphContainer>
               <Graph ref={graph1Ref}></Graph>
@@ -425,6 +650,13 @@ function MainPage() {
           <LastBoxHeader>Best Refactoring Codes</LastBoxHeader>
           <PatternBox>
             <PatternBoxHeader>Green Pattern</PatternBoxHeader>
+            <SelectWrapper>
+              <Select value={selectedType} onChange={(e) => setSelectedType(parseInt(e.target.value))}>
+                <option value={1}>Pattern 1</option>
+                <option value={2}>Pattern 2</option>
+                <option value={3}>Pattern 3</option>
+              </Select>
+            </SelectWrapper>
             <LastBoxButton onClick={openModal}>신고하기</LastBoxButton>
             <StyledModal
               isOpen={isModalOpen}
@@ -433,9 +665,9 @@ function MainPage() {
               <ModalContent>
                 <Toptitle>신고 사유</Toptitle><br />
                 <form>
-                  <TextArea></TextArea>
+                  <TextArea value={reportDescription} onChange={(e) => setReportDescription(e.target.value)}></TextArea>
                 </form>
-                <Button1>신고하기</Button1>
+                <Button1 onClick={reportSubmit}>신고하기</Button1>
                 <Button2 onClick={closeModal}>닫기</Button2>
               </ModalContent>
             </StyledModal>
