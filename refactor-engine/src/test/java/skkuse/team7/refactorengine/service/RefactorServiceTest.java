@@ -51,9 +51,9 @@ class RefactorServiceTest {
                 + "    }\n"
                 + "}\n";
 
-        String mockBuggyPart = "12:         for(int i=0; i<arr.size(); i++) {\n";
-        String mockFixedPart = "12:        int arrSize = arr.size();\n"
-                + "13:        for(int i=0; i<arrSize; i++) {\n";
+        String mockBuggyPart = "        for(int i=0; i<arr.size(); i++) {\n";
+        String mockFixedPart = "        int arrSize = arr.size();\n"
+                + "        for(int i=0; i<arrSize; i++) {\n";
 
         RefactoringResult refactoringResult = refactorService.removeDuplicateGetSize(mockBuggyCode, "");
 
@@ -105,9 +105,9 @@ class RefactorServiceTest {
                 + "    }\n"
                 + "}\n";
 
-        String mockBuggyPart = "12:         while(i < arr.size()) {\n";
-        String mockFixedPart = "12:        int arrSize = arr.size();\n"
-                + "13:        while(i < arrSize) {\n";
+        String mockBuggyPart = "        while(i < arr.size()) {\n";
+        String mockFixedPart = "        int arrSize = arr.size();\n"
+                + "        while(i < arrSize) {\n";
 
         RefactoringResult refactoringResult = refactorService.removeDuplicateGetSize(mockBuggyCode, "");
 
@@ -160,25 +160,25 @@ class RefactorServiceTest {
                 + "    }\n"
                 + "}\n";
 
-        String mockBuggyPart = "8:         if(cond1) {\n"
-                + "9:             if(cond2) {\n"
-                + "10:                 if(cond3) {\n"
-                + "11:                     System.out.println(\"Hello\");\n"
-                + "12:                     System.out.println(\"Hello\");\n"
-                + "13:                     System.out.println(\"Hello\");\n"
-                + "14:                 }\n"
-                + "15:             }\n"
-                + "16:         }\n";
+        String mockBuggyPart = "        if(cond1) {\n"
+                + "            if(cond2) {\n"
+                + "                if(cond3) {\n"
+                + "                    System.out.println(\"Hello\");\n"
+                + "                    System.out.println(\"Hello\");\n"
+                + "                    System.out.println(\"Hello\");\n"
+                + "                }\n"
+                + "            }\n"
+                + "        }\n";
 
-        String mockFixedPart = "8:         if (cond1 && cond2 && cond3) {\n"
-                + "9: \n"
-                + "10: \n"
-                + "11:                     System.out.println(\"Hello\");\n"
-                + "12:                     System.out.println(\"Hello\");\n"
-                + "13:                     System.out.println(\"Hello\");\n"
-                + "14: \n"
-                + "15: \n"
-                + "16:         }\n";
+        String mockFixedPart = "        if (cond1 && cond2 && cond3) {\n"
+                + "\n"
+                + "\n"
+                + "                    System.out.println(\"Hello\");\n"
+                + "                    System.out.println(\"Hello\");\n"
+                + "                    System.out.println(\"Hello\");\n"
+                + "\n"
+                + "\n"
+                + "        }\n";
 
         RefactoringResult refactoringResult = refactorService.removeDuplicatedIf(mockBuggyCode);
 
@@ -252,15 +252,15 @@ class RefactorServiceTest {
                 + "    }\n"
                 + "}\n";
         String mockBuggyPart =
-                  "4:         for(int i=0; i<10; i++) {\n"
-                + "5:             A b = new A();\n"
-                + "6:             int x = 0;\n"
-                + "7:         }\n";
+                  "        for(int i=0; i<10; i++) {\n"
+                + "            A b = new A();\n"
+                + "            int x = 0;\n"
+                + "        }\n";
         String mockFixedPart =
-                  "4:         A b = new A();\n"
-                + "5:         for(int i=0; i<10; i++) {\n"
-                + "6:             int x = 0;\n"
-                + "7:         }\n";
+                  "        A b = new A();\n"
+                + "        for(int i=0; i<10; i++) {\n"
+                + "            int x = 0;\n"
+                + "        }\n";
         RefactorService refactorService = new RefactorService();
         RefactoringResult refactoringResult = refactorService.removeDuplicateObjectCreation(mockBuggyCode);
 
