@@ -42,30 +42,30 @@ const TableContainer = styled.div`
 `;
 
 const TableComponent = ({ data, onDelete }) => {
-    return (
-        <TableContainer>
-            <Table>
-                <thead>
-                    <tr>
-                        <TableHeader>Pattern</TableHeader>
-                        <TableHeader>Report message</TableHeader>
-                        <TableHeader>Action</TableHeader>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map(item => (
-                        <tr key={item.id}>
-                            <TableCell>{item.id}</TableCell>
-                            <TableCell>{item.text}</TableCell>
-                            <TableCell>
-                                <DeleteButton onClick={() => onDelete(item.id)}>Delete</DeleteButton>
-                            </TableCell>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
-        </TableContainer>
-    );
+  return (
+    <TableContainer>
+      <Table>
+        <thead>
+          <tr>
+            <TableHeader>Pattern</TableHeader>
+            <TableHeader>Report message</TableHeader>
+            <TableHeader>Action</TableHeader>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map(item => (
+            <tr key={item.id}>
+              <TableCell>{item.id}</TableCell>
+              <TableCell>{item.description}</TableCell>
+              <TableCell>
+                <DeleteButton onClick={() => onDelete(item.id)}>Delete</DeleteButton>
+              </TableCell>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </TableContainer>
+  );
 };
 
 export default TableComponent;

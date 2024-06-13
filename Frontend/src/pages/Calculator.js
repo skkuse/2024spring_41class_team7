@@ -254,6 +254,7 @@ function Calculator() {
   const [memory, setMemory] = useState(0);
   const [visibility, setVisibility] = useState('private');
   const [result, setResult] = useState(null);
+  const [buggyCodeId, setBuggyCodeId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
 
@@ -270,7 +271,7 @@ function Calculator() {
       return;
     }
     const data = { java_code: code, cpu, cores, memory, visibility };
-    console.log(data);  // 데이터 형식을 확인하기 위한 로그 출력
+    console.log(data);
     try {
       const response = await fetch('/api/calculate/carbon-emission/', {
         method: 'POST',
@@ -280,9 +281,9 @@ function Calculator() {
         body: JSON.stringify(data),
       });
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error:', errorText);
         setIsModalOpen(true);
-        const errorData = await response.json();
-        console.error('Error:', errorData);
       } else {
         const responseData = await response.json();
         console.log(response);
@@ -290,46 +291,145 @@ function Calculator() {
 
         const buggyCodeData = {
           code_text: code,
+          fixed_code_text: '',
           emission_amount: responseData.carbon_emission,
           core_type: cpu,
           core_model: 'default',
           core_num: cores,
-          memory: memory
+          memory: memory,
         };
 
-        const buggyCodeData1 = buggyCodeData.code_text.replace(/Main/g, 'Buggy');
-        console.log(buggyCodeData1);
-        const buggyCodeResponse = await fetch('http://localhost:8080/refactoring/all', {
+        const buggyCodeResponse = await fetch('/api/buggyCodes/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: buggyCodeData1,
+          body: JSON.stringify(buggyCodeData),
         });
+        let id = null;
         if (!buggyCodeResponse.ok) {
-          console.log(buggyCodeResponse);
+          const errorText = await buggyCodeResponse.text();
+          console.error('Error saving buggy code:', errorText);
           setIsModalOpen(true);
-          const errorData = await buggyCodeResponse.json();
-          console.error('Error saving buggy code:', errorData);
         } else {
-          const fixedData = await buggyCodeResponse.json();
+          const buggyResponseData = await buggyCodeResponse.json();
+          console.log('Result:', buggyResponseData);
+
+          if (buggyResponseData.status === 'success') {
+            id = buggyResponseData.onSuccess.buggy_code_id;
+            setBuggyCodeId(id);
+          } else {
+            console.error('Error:', buggyResponseData.onError);
+          }
+        }
+
+        const refactorResponse = await fetch('http://localhost:8080/refactoring/all', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: buggyCodeData.code_text,
+        });
+        if (!refactorResponse.ok) {
+          const errorText = await refactorResponse.text();
+          console.error('Error refactoring code:', errorText);
+          setIsModalOpen(true);
+        } else {
+          const fixedData = await refactorResponse.json();
           console.log('result: ', fixedData.fixedCodeText);
+
+          const text = fixedData.fixedCodeText.replace(/Fixed/g, 'Buggy');
+          const fixedCodeData = {
+            java_code: text,
+            cpu,
+            cores,
+            memory,
+            visibility,
+          };
+
+          const fixedEmissionResponse = await fetch('/api/calculate/carbon-emission/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(fixedCodeData),
+          });
+          if (!fixedEmissionResponse.ok) {
+            const errorText = await fixedEmissionResponse.text();
+            console.error('Error calculating fixed code emission:', errorText);
+            return;
+          }
+          const fixedEmissionData = await fixedEmissionResponse.json();
+
+          const reducedAmount = responseData.carbon_emission - fixedEmissionData.carbon_emission;
+          const reducedRate = (reducedAmount / responseData.carbon_emission) * 100;
+          console.log('reducedAmount', reducedAmount);
+          console.log('reducedRate', reducedRate);
+
+          const refactoringIds = [1, 2, 3];
+          for (const refactoringId of refactoringIds) {
+            const refactorPartResponse = await fetch(`http://localhost:8080/refactoring/${refactoringId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: buggyCodeData.code_text,
+            });
+
+            if (!refactorPartResponse.ok) {
+              const errorText = await refactorPartResponse.text();
+              console.error(`Error refactoring code for id ${refactoringId}:`, errorText);
+              continue;
+            } else {
+              const fixed = await refactorPartResponse.json();
+              console.log('result: ', fixed);
+              console.log('id', id);
+
+              for (let i = 0; i < fixed.buggyParts.length; i++) {
+                const postData = {
+                  buggy_part: fixed.buggyParts[i],
+                  fixed_part: fixed.fixedParts[i],
+                  reduced_amount: reducedAmount,
+                  reduced_rate: reducedRate,
+                  buggy_code_id: id,
+                  fix_strategy_id: refactoringId,
+                  fixed_code_text: fixed.entireCode,
+                };
+                console.log(postData);
+                const postResponse = await fetch('/api/fixedCodes/', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(postData),
+                });
+
+                if (!postResponse.ok) {
+                  const errorText = await postResponse.text();
+                  console.error(`Error posting fixed code for strategy ${refactoringId}:`, errorText);
+                  console.log(postResponse);
+                } else {
+                  console.log(`Successfully posted fixed code for strategy ${refactoringId}`);
+                }
+              }
+            }
+          }
+
+          navigate(`/showrefactoring?buggyCodeId=${id}&fixedCodeText=${encodeURIComponent(fixedData.fixedCodeText)}`);
         }
       }
     } catch (error) {
       setIsModalOpen(true);
+      console.error('Unexpected error:', error);
     }
   };
-  useEffect(() => {
-    if (result !== null) {
-      console.log(result); //탄소배출량 결과
-      navigate('/showrefactoring');
-    }
-  }, [result, navigate]);
+
 
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+
 
   return (
     <Wrapper>
@@ -378,7 +478,7 @@ function Calculator() {
           <Toptitle>Error!</Toptitle>
           <Box2>
             <Title>실행되는 자바코드를 넣어주세요!</Title>
-            <Contents>* 클래스 이름을 Main으로 해주세요.</Contents>
+            <Contents>* 클래스 이름을 Buggy으로 해주세요.</Contents>
             <Contents>* 오타가 없는지 확인해주세요.</Contents>
             <ModalButton onClick={closeModal}>Close</ModalButton>
           </Box2>
