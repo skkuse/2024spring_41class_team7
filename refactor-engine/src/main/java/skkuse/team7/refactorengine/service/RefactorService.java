@@ -61,7 +61,7 @@ public class RefactorService {
                     if (sizeMethodMatcher.find()) {
                         if (line2.contains("for") || line2.contains("while")) {
                             buggyLine = j;
-                            buggyPart += (j+1) + ": " + line2 + "\n";
+                            buggyPart += line2 + "\n";
                             isDetected = true;
                             break;
                         }
@@ -88,8 +88,8 @@ public class RefactorService {
             lines.add(buggyLine, builder.toString());
 
             // get fixed line
-            fixedPart += (buggyLine+1) + ":" + lines.get(buggyLine) + "\n";
-            fixedPart += (buggyLine+2) + ":" + lines.get(buggyLine+1) + "\n";
+            fixedPart += lines.get(buggyLine) + "\n";
+            fixedPart += lines.get(buggyLine+1) + "\n";
         }
 
         for (int i=0; i<lines.size(); ++i) {
@@ -360,8 +360,8 @@ public class RefactorService {
 
         for (int i=0; i<lines.size(); ++i) {
             if (i >= startIfIndexes.get(startNested) && i <=endIfIndexes.get(startNested)) {
-                buggyPart += (i+1) + ": " + lines.get(i) + "\n";
-                fixedPart += (i+1) + ": " + newLines.get(i) + "\n";
+                buggyPart += lines.get(i) + "\n";
+                fixedPart += newLines.get(i) + "\n";
             }
         }
 
@@ -458,7 +458,7 @@ public class RefactorService {
             if (start != objectCreationIdx && end != objectCreationIdx) {
 
                 for (int k=start; k<=end; ++k) {
-                    buggyPart += (k+1) + ": " + lines.get(k) + "\n";
+                    buggyPart += lines.get(k) + "\n";
                 }
 
                 System.out.println(lines.get(objectCreationIdx) + " in " + start +  " ~ " + end);
@@ -480,7 +480,7 @@ public class RefactorService {
 
         if (fixedPartStart <= fixedPartEnd) {
             for (int k=fixedPartStart; k<=fixedPartEnd; ++k) {
-                fixedPart += (k+1) + ": " + lines.get(k) + "\n";
+                fixedPart += lines.get(k) + "\n";
             }
         }
 
