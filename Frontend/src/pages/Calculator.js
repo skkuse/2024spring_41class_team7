@@ -286,12 +286,12 @@ function Calculator() {
         setIsModalOpen(true);
       } else {
         const responseData = await response.json();
-        console.log(response);
+        console.log("abc",responseData);
         setResult(responseData.carbon_emission);
 
         const buggyCodeData = {
           code_text: code,
-          fixed_code_text: '',
+          fixed_code_text: 'null',
           emission_amount: responseData.carbon_emission,
           core_type: cpu,
           core_model: 'default',
@@ -384,7 +384,7 @@ function Calculator() {
               const fixed = await refactorPartResponse.json();
               console.log('result: ', fixed);
               console.log('id', id);
-
+              console.log('fixed', fixed.entireCode);
               for (let i = 0; i < fixed.buggyParts.length; i++) {
                 const postData = {
                   buggy_part: fixed.buggyParts[i],
@@ -439,8 +439,7 @@ function Calculator() {
         <Box>
           <FormContainer>
             <SubTitle>Input Code</SubTitle>
-            <Button2 selected={visibility === 'public'} onClick={() => setVisibility('public')}>Public</Button2>
-            <Button2 selected={visibility === 'private'} onClick={() => setVisibility('private')}>Private</Button2>
+
             <InputSection>
               <TextArea
                 value={code}

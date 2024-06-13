@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-const Container = styled.div` 
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   background: transparent;
@@ -45,7 +45,7 @@ const FormContainer = styled.div`
   margin-right: 40px;
   margin-right: 20px;
   position: relative;
-  
+
   &:last-child {
     margin-right: 0;
   }
@@ -148,7 +148,7 @@ function ShowRefactoring() {
   }, [buggyCodeId, fixedCodeText]);
 
   const handleCodeConversion = () => {
-    navigate('/resultpage');
+    navigate('/resultpage', { state: { codeId: buggyCodeId, fixedText: greenCode } });
   };
 
   return (
