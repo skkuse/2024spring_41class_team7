@@ -3,16 +3,16 @@ import time
 from fastapi import HTTPException
 
 def execute_java_code(java_code: str):
-    with open("Main.java", "w") as file:
+    with open("Buggy.java", "w") as file:
         file.write(java_code)
     
-    compile_process = subprocess.run(["javac", "Main.java"], capture_output=True, text=True)
+    compile_process = subprocess.run(["javac", "Buggy.java"], capture_output=True, text=True)
     
     if compile_process.returncode != 0:
         raise HTTPException(status_code=400, detail=f"Compilation failed: {compile_process.stderr}")
     
     start_time = time.time()
-    execute_process = subprocess.run(["java", "Main"], capture_output=True, text=True)
+    execute_process = subprocess.run(["java", "Buggy"], capture_output=True, text=True)
     end_time = time.time()
     
     if execute_process.returncode != 0:

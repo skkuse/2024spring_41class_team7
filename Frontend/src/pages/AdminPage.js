@@ -84,17 +84,10 @@ const Button2 = styled.button`
   }
 `;
 
-const data = [
-  { id: 1, text: '누누누누누누누누누ㅜㄴㄹ넘;ㅣㄴ올;먀ㅗㄴ더ㅏ우런뮤ㅏㅕ노다고지ㅏㅓ누피ㅏㅜ피너ㅏㅙ햐ㅕㅈ도새ㅑㅗㅈ;미라ㅗ니;ㅏㅗㅇ리ㅏㅜㅋㅌ처,ㅜㄴ아뢔ㅔ쟈ㅗㄷ긴망;ㅣ라ㅟㄴㅁㅇ푸 ,튜파ㅓㄴ아롲대ㅑㅗㄹ;나ㅣㅓㅜㅇㄹ,ㅡ피' },
-  { id: 2, text: 'Data 2' },
-  { id: 3, text: 'Data 3' }
-];
-
 const AdminPage = ({ auth }) => {
-  const [tableData, setTableData] = useState(data);
+  const [tableData, setTableData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState(null);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -103,46 +96,59 @@ const AdminPage = ({ auth }) => {
       navigate('/admin');
     }
   }, [auth, navigate]);
-  // useEffect(() => {
-  //   // 데이터를 백엔드에서 가져오는 함수 호출
-  //   fetchData();
-  // }, []);
 
-  // const fetchData = async () => {
-  //   try {
-  //     const response = await fetch('/');
-  //     if (!response.ok) {
-  //       throw new Error('Failed to fetch data');
-  //     }
-  //     const data = await response.json();
-  //     setTableData(data);
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   }
-  // };
+  useEffect(() => {
+    fetchReports();
+  }, []);
 
-  // const handleDelete = async (id) => {
-  //   try {
-  //     const response = await fetch(`/${id}`, {
-  //       method: 'DELETE'
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error('Failed to delete data');
-  //     }
-  //     setTableData(prevData => prevData.filter(item => item.id !== id));
-  //   } catch (error) {
-  //     console.error('Error deleting data:', error);
-  //   }
-  // };
+  const fetchReports = async () => {
+    try {
+      const response = await fetch('/api/reports');
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const data = await response.json();
+      console.log('Fetched data:', data);
+
+      if (data.status === 'success' && data.onSuccess && Array.isArray(data.onSuccess.items)) {
+        const reports = data.onSuccess.items.map(report => ({
+          id: report.report_id,
+          description: report.description,
+        }));
+        console.log(reports);
+        setTableData(reports);
+      } else {
+        throw new Error(data.onError.message || 'Error fetching reports');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`/api/reports/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete data');
+      } else {
+        console.log(response);
+      }
+      setTableData(prevData => prevData.filter(item => item.id !== id));
+    } catch (error) {
+      console.error('Error deleting data:', error.message);
+    }
+  };
+
 
   const handleConfirmDelete = () => {
-    // 여기서 삭제 기능을 구현합니다.
-    const newData = tableData.filter(item => item.id !== deleteItemId);
-    setTableData(newData);
+    handleDelete(deleteItemId)
     setIsModalOpen(false);
   };
 
-  const openModal = () => {
+  const openModal = (id) => {
+    setDeleteItemId(id);
     setIsModalOpen(true);
   };
 
